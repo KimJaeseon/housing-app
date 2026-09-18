@@ -14,7 +14,7 @@ let server,browser;
 try{
  let ready=false;for(let i=0;i<50;i++){if(backend.exitCode!==null)throw new Error('Test server could not start; check port 8000');try{const r=await fetch('http://127.0.0.1:8000/health');const h=await r.json();if(h.mode==='list_review'){ready=true;break;}}catch{}await new Promise(r=>setTimeout(r,100));}if(!ready)throw new Error('Server not ready');
  const root=path.resolve('dist');server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+(req.url==='/'?'/index.html':req.url));if(!file.startsWith(root+path.sep)){res.writeHead(403);return res.end();}try{res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':'text/html');res.end(fs.readFileSync(file));}catch{res.writeHead(404);res.end();}});
- await new Promise(r=>server.listen(18800,'127.0.0.1',r));browser=await chromium.launch({channel:'msedge',headless:true});const context=await browser.newContext({viewport:{width:390,height:844}});const page=await context.newPage();const checks=[];
+ await new Promise(r=>server.listen(18800,'127.0.0.1',r));browser=await chromium.launch({channel:'chrome',headless:true});const context=await browser.newContext({viewport:{width:390,height:844}});const page=await context.newPage();const checks=[];
  async function scan(name){const r=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();checks.push({name,violations:r.violations.map(v=>v.id)});await page.screenshot({path:`qa/${name}.png`,fullPage:true});}
  await page.goto('http://127.0.0.1:18800');await page.getByRole('button',{name:'서울 공고 찾아보기'}).click();
  await page.getByRole('button',{name:'마감·취소로 제외된 공고 2건',exact:true}).waitFor({timeout:45000});await scan('actual-lh-list');
@@ -26,4 +26,5 @@ try{
  await page.getByRole('button',{name:'검색 결과로 돌아가기'}).click();await page.waitForTimeout(200);checks.push({name:'actual-return-focus',passed:await detail.evaluate(el=>el===document.activeElement)});
  fs.writeFileSync('qa/live-results.json',JSON.stringify(checks,null,2));console.log(JSON.stringify(checks));if(checks.some(c=>c.violations?.length||c.passed===false))process.exitCode=1;
 }finally{if(browser)await browser.close();if(server)server.close();backend.kill();}
+
 

@@ -3,6 +3,7 @@
 현재 단계: LH 임대주택 목록의 기간·페이지 조회, 확인 필요/마감·취소 구분, 앱 목록·상세·공식 원문 연결. 원문 검증 완료 공고와 로그인·저장 기능은 아직 미구현이다.
 
 - [프로그램 명세서](docs/PROGRAM_SPECIFICATION.md) — 기능·화면·API·데이터·현재 구현 및 후속 개발 기준
+- [다른 PC 설치·실행·테스트 가이드](docs/guides/NEW_PC_SETUP.md) — 최초 clone, 환경 설치, 키 등록, pull 후 재검사
 - [직접 실행·테스트 안내](docs/guides/RUN_AND_TEST.md)
 - [키 암호화 저장 안내](docs/backend/KEY_MANAGEMENT.md)
 - [제공된 API 가이드 반영 결과](docs/validation/2026-09-16_GUIDE_ALIGNMENT.md)
@@ -50,4 +51,5 @@ frontend: `pnpm exec tsc --noEmit`, `pnpm exec expo export --platform web`, `nod
 ## 소스 관리
 
 프론트엔드·백엔드·공통 계약·문서를 하나의 GitHub 저장소로 관리한다. [GitHub 작업 안내](docs/guides/GITHUB_WORKFLOW.md)를 따른다.
+
 
