@@ -1,0 +1,36 @@
+{
+  "recorded_at": "2026-09-16T04:57:29.228668+00:00",
+  "backend_tests": 79,
+  "reference_rule_tests": 26,
+  "typescript": "passed",
+  "expo_web_export": "passed",
+  "offline_web": {
+    "axe_states": 20,
+    "violations": 0,
+    "behavior_checks": 5,
+    "behavior_failures": 0
+  },
+  "live_web": {
+    "axe_states": 4,
+    "violations": 0,
+    "behavior_checks": 2,
+    "behavior_failures": 0
+  },
+  "native_voiceover": "not_run",
+  "native_talkback": "not_run",
+  "sha256": {
+    "backend/lh_list.py": "235df61a9ca7ddc68eb5bb37b263140b4617074b3c25e7bfa2284eeb4e20688f",
+    "backend/lh_probe.py": "d45feba91e978f80bf361dc4bb927af159cd57d9dc928b4f6a5e450bc805c7ca",
+    "backend/app.py": "e380f23f5c575b70271bb4da0347a036492403c0cbfac847a6a0b9d5248487bc",
+    "backend/serve_lh.py": "b74d8ece64f5109e3d7b7b70155b44b7a7af8a7e0f055a35f449e0b90c995936",
+    "backend/validation.py": "4e2532436012aa0f26cdc629495ec1bd4b9d8cd608e772a4f2ae5fc4cc64bce1",
+    "backend/test_lh_list.py": "f146a363c3f77d0d1ac489d136be077ddca54ba16e7f20e597d8684b184d67c7",
+    "frontend/App.tsx": "1fcfec42fe7c1116541598cc83d83a0c02fd54dec8eee9b8db13682be13454f7",
+    "frontend/LiveNotice.tsx": "8ff849baee527201e1372d983c05960f6c6c6c921dc56e79c66452d084b8dfe7",
+    "frontend/useSearchApi.ts": "a5fd4831f589975e71d0b0a38b3c5e6ff870149a4fa94aba4a836e2187ca0ba3",
+    "frontend/qa.mjs": "d9b2095e4b4a13bd8acb98c8c2e7f298b3d9547438a1067418cff25139fad0fb",
+    "frontend/qa-live-list.mjs": "f3536ade605b5683829a191a9bc64a0884e3d8f0a8f0798cf26ab9b9e23e28e9",
+    "shared/contracts/search-result.schema.json": "6fa1922989dee6c00d136c4a18fed86f449e88c248721125c6fe4aba0fc575e9",
+    "shared/contracts/list_review.json": "08187f76a8b2c2b760e3fb4bcb8ecd6d4daed30e608c3b5f27a14e3cb5237ac2"
+  }
+}

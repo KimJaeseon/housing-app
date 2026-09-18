@@ -1,0 +1,41 @@
+C:\data\menual\housing-app-guidelines\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_cancel_terminal (backend.test_api.ApiTests.test_cancel_terminal) ... ok
+test_conflict (backend.test_api.ApiTests.test_conflict) ... ok
+test_create_schema (backend.test_api.ApiTests.test_create_schema) ... ok
+test_examples_schema (backend.test_api.ApiTests.test_examples_schema) ... ok
+test_extra_private_fields_rejected (backend.test_api.ApiTests.test_extra_private_fields_rejected) ... ok
+test_false_completed_rejected (backend.test_api.ApiTests.test_false_completed_rejected) ... ok
+test_idempotent (backend.test_api.ApiTests.test_idempotent) ... ok
+test_new_request (backend.test_api.ApiTests.test_new_request) ... ok
+test_no_false_empty (backend.test_api.ApiTests.test_no_false_empty) ... ok
+test_no_session (backend.test_api.ApiTests.test_no_session) ... ok
+test_owner (backend.test_api.ApiTests.test_owner) ... ok
+test_schema_missing_field (backend.test_api.ApiTests.test_schema_missing_field) ... ok
+test_schema_wrong_timestamp (backend.test_api.ApiTests.test_schema_wrong_timestamp) ... ok
+test_unknown_region (backend.test_api.ApiTests.test_unknown_region) ... ok
+test_cancelled_queue_never_calls (backend.test_workers.WorkerTests.test_cancelled_queue_never_calls) ... ok
+test_get_does_not_start_work (backend.test_workers.WorkerTests.test_get_does_not_start_work) ... ok
+test_invalid_date_no_call (backend.test_workers.WorkerTests.test_invalid_date_no_call) ... ok
+test_late_response_cannot_overwrite_cancel (backend.test_workers.WorkerTests.test_late_response_cannot_overwrite_cancel) ... ok
+test_missing_key_no_call (backend.test_workers.WorkerTests.test_missing_key_no_call) ... ok
+test_queue_limit (backend.test_workers.WorkerTests.test_queue_limit) ... ok
+test_success_is_not_verified (backend.test_workers.WorkerTests.test_success_is_not_verified) ... ok
+test_conflicting_codes_not_success (backend.test_lh_probe.ProbeTests.test_conflicting_codes_not_success) ... ok
+test_empty_rows_do_not_establish_no_notices (backend.test_lh_probe.ProbeTests.test_empty_rows_do_not_establish_no_notices) ... ok
+test_encoded_key_rejected_without_request (backend.test_lh_probe.ProbeTests.test_encoded_key_rejected_without_request) ... ok
+test_http_error_does_not_leak (backend.test_lh_probe.ProbeTests.test_http_error_does_not_leak) ... ok
+test_invalid_date (backend.test_lh_probe.ProbeTests.test_invalid_date) ... ok
+test_key_is_encoded_once (backend.test_lh_probe.ProbeTests.test_key_is_encoded_once) ... ok
+test_large_response (backend.test_lh_probe.ProbeTests.test_large_response) ... ok
+test_missing_key_never_calls (backend.test_lh_probe.ProbeTests.test_missing_key_never_calls) ... ok
+test_redirect_disabled (backend.test_lh_probe.ProbeTests.test_redirect_disabled) ... ok
+test_success_signal_still_unverified (backend.test_lh_probe.ProbeTests.test_success_signal_still_unverified) ... ok
+test_transport_error_does_not_leak (backend.test_lh_probe.ProbeTests.test_transport_error_does_not_leak) ... ok
+test_unknown_json_not_success (backend.test_lh_probe.ProbeTests.test_unknown_json_not_success) ... ok
+test_xml_error_not_success (backend.test_lh_probe.ProbeTests.test_xml_error_not_success) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.140s
+
+OK

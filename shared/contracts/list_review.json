@@ -1,0 +1,139 @@
+{
+  "schema_version": "0.1.0",
+  "id": "synthetic-list-review",
+  "revision": 1,
+  "status": "partial",
+  "region": {
+    "id": "test-seoul",
+    "label": "서울특별시 (합성 식별자)"
+  },
+  "requested_at": "2026-09-10T09:00:00+09:00",
+  "finished_at": "2026-09-10T09:00:05+09:00",
+  "sources": [
+    {
+      "id": "LH",
+      "status": "failed",
+      "checked_at": "2026-09-10T09:00:00+09:00",
+      "error_code": "DOCUMENT_VERIFICATION_PENDING",
+      "retryable": false
+    }
+  ],
+  "uncovered_source_ids": [],
+  "notices": [
+    {
+      "id": "LH-10001-10-03",
+      "source_id": "LH",
+      "official_id": "10001",
+      "title": "합성 확인 필요 행복주택",
+      "housing_type": "행복주택",
+      "region_ids": [
+        "seoul"
+      ],
+      "scope": "unknown",
+      "versions": [
+        {
+          "id": "LH-10001-10-03-list",
+          "kind": "unclassified",
+          "related_version_ids": [],
+          "changed_fields": [],
+          "relationship_evidence_ids": [],
+          "checked_at": "2026-09-10T09:00:00+09:00"
+        }
+      ],
+      "current_version_id": null,
+      "revision_resolved": false,
+      "checked_in_job_id": "synthetic-list-review",
+      "checked_at": "2026-09-10T09:00:00+09:00",
+      "recruitment_status": "unknown",
+      "verification_status": "needs_review",
+      "review_reasons": [
+        "목록 정보만 확인했습니다. 접수 회차·시간, 금액, 신청 자격은 원문 검증 전입니다.",
+        "최종 정정·취소 관계와 공공주택 세부 유형의 확인이 필요합니다."
+      ],
+      "evidence": [
+        {
+          "id": "LH-10001-10-03-evidence",
+          "url": "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1",
+          "document_version_id": "LH-10001-10-03-list",
+          "locator": "목록 API의 PAN_ID, PAN_NM, PAN_SS, PAN_NT_ST_DT, CLSG_DT. 첨부 검증 전.",
+          "checked_at": "2026-09-10T09:00:00+09:00",
+          "method": "api"
+        }
+      ],
+      "units": [],
+      "listing": {
+        "status": "접수중",
+        "posted_date": "2026.08.21",
+        "closing_date": "2026.09.02",
+        "official_url": "https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=10001&aisTpCd=10&ccrCnntSysDsCd=03&uppAisTpCd=06&mi=1026"
+      }
+    }
+  ],
+  "personalization": {
+    "enabled": false,
+    "result": "not_requested",
+    "unresolved_conditions": []
+  },
+  "excluded_notices": [
+    {
+      "id": "LH-10002-10-03",
+      "source_id": "LH",
+      "official_id": "10002",
+      "title": "합성 마감 행복주택",
+      "housing_type": "행복주택",
+      "region_ids": [
+        "seoul"
+      ],
+      "scope": "unknown",
+      "versions": [
+        {
+          "id": "LH-10002-10-03-list",
+          "kind": "unclassified",
+          "related_version_ids": [],
+          "changed_fields": [],
+          "relationship_evidence_ids": [],
+          "checked_at": "2026-09-10T09:00:00+09:00"
+        }
+      ],
+      "current_version_id": null,
+      "revision_resolved": false,
+      "checked_in_job_id": "synthetic-list-review",
+      "checked_at": "2026-09-10T09:00:00+09:00",
+      "recruitment_status": "closed",
+      "verification_status": "needs_review",
+      "review_reasons": [
+        "목록 정보만 확인했습니다. 접수 회차·시간, 금액, 신청 자격은 원문 검증 전입니다.",
+        "최종 정정·취소 관계와 공공주택 세부 유형의 확인이 필요합니다."
+      ],
+      "evidence": [
+        {
+          "id": "LH-10002-10-03-evidence",
+          "url": "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1",
+          "document_version_id": "LH-10002-10-03-list",
+          "locator": "목록 API의 PAN_ID, PAN_NM, PAN_SS, PAN_NT_ST_DT, CLSG_DT. 첨부 검증 전.",
+          "checked_at": "2026-09-10T09:00:00+09:00",
+          "method": "api"
+        }
+      ],
+      "units": [],
+      "listing": {
+        "status": "접수마감",
+        "posted_date": "2026.08.21",
+        "closing_date": "2026.09.02",
+        "official_url": "https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=10002&aisTpCd=10&ccrCnntSysDsCd=03&uppAisTpCd=06&mi=1026"
+      }
+    }
+  ],
+  "collection": {
+    "source": "LH",
+    "housing_type": "임대주택(06)",
+    "posted_filter": "2026.08.01",
+    "closing_filter": "2026.09.30",
+    "pages_fetched": 1,
+    "page_limit": 5,
+    "rows_fetched": 2,
+    "list_complete": true,
+    "date_filter_verified": true,
+    "scope_mismatch_count": 0
+  }
+}

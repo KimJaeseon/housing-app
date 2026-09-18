@@ -1,0 +1,26 @@
+[
+  {
+    "name": "actual-lh-list",
+    "violations": []
+  },
+  {
+    "name": "actual-lh-excluded",
+    "violations": []
+  },
+  {
+    "name": "actual-lh-detail",
+    "violations": []
+  },
+  {
+    "name": "actual-lh-detail-narrow",
+    "violations": []
+  },
+  {
+    "name": "narrow-no-horizontal-overflow",
+    "passed": true
+  },
+  {
+    "name": "actual-return-focus",
+    "passed": true
+  }
+]

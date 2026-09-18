@@ -1,0 +1,19 @@
+{
+  "key_available": true,
+  "files_checked": 84,
+  "key_leaks_found": 0,
+  "files": {
+    "backend/lh_supply.py": "83ec5bd9ea63041dbb835385cb73bf8d600a3d90426cb976f24459139cb6f87b",
+    "backend/app.py": "117a27a875597217f4351f9230b16e6353a5ca7dfeaf3c98fd94772141e4a775",
+    "backend/validation.py": "5454875e081603a6aeee18fd64086e4d3b0493c26c7e2c2a929603a870f11748",
+    "backend/serve_lh.py": "53661298b0d28365bf82e909287b53a39064fdc91c95aab40f8d027db451848d",
+    "backend/test_lh_supply.py": "809c9a1e9be8356897df45ba35141f46d29b5a5725245fa8ac4b11dad99d06a4",
+    "frontend/useSearchApi.ts": "dbe81d66faadd96fa289c6d2d44f8cb86e5bb36a5414c52ac1885579d7e63a2f",
+    "frontend/LiveNotice.tsx": "de2db80ab29ba501bd8e9dab86e8b21b842fd0cde6a8f2ef4cae5e84bb14340b",
+    "frontend/App.tsx": "7e8131a3a29769c02ee8dab5689e292c1d04924667be8fda3f606bb57fbfe187",
+    "frontend/qa.mjs": "282bdcde08a7c8793c5a95df91b571efae01d74164c34d0e6a79f7d1fd7e9451",
+    "frontend/fixtures/supply.json": "366c1392fc7e520c871e019421748377b6e3acea4a73cb11ff18d8abd481fa02",
+    "shared/contracts/search-result.schema.json": "da62a25691f205a432f3031d3af69622af09e4fff2607aa118afc48868f53fd3",
+    "docs/references/LH_supply_API_20260202.docx": "b3fa920cd777de3f8179b33d2636e26204c872cac41af0c2a8b3c198f69b447c"
+  }
+}

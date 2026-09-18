@@ -1,0 +1,144 @@
+{
+  "schema_version": "0.1.0",
+  "id": "8d12106e-12a9-4df0-b31f-1faceaa4bd5c",
+  "revision": 3,
+  "status": "partial",
+  "region": {
+    "id": "seoul",
+    "label": "서울특별시"
+  },
+  "requested_at": "2026-09-16T04:50:04.080528+00:00",
+  "finished_at": "2026-09-16T04:50:04.206686+00:00",
+  "sources": [
+    {
+      "id": "LH",
+      "status": "failed",
+      "checked_at": "2026-09-16T04:50:04.206686+00:00",
+      "error_code": "DOCUMENT_VERIFICATION_PENDING",
+      "retryable": false
+    }
+  ],
+  "uncovered_source_ids": [
+    "SH",
+    "GH",
+    "iH",
+    "municipalities"
+  ],
+  "notices": [],
+  "personalization": {
+    "enabled": false,
+    "result": "not_requested",
+    "unresolved_conditions": []
+  },
+  "excluded_notices": [
+    {
+      "id": "LH-2015122300020605-10-03",
+      "source_id": "LH",
+      "official_id": "2015122300020605",
+      "title": "[정정공고]서울번동3 행복주택 예비입주자 모집",
+      "housing_type": "행복주택",
+      "region_ids": [
+        "seoul"
+      ],
+      "scope": "unknown",
+      "versions": [
+        {
+          "id": "LH-2015122300020605-10-03-list",
+          "kind": "unclassified",
+          "related_version_ids": [],
+          "changed_fields": [],
+          "relationship_evidence_ids": [],
+          "checked_at": "2026-09-16T04:50:04.206686+00:00"
+        }
+      ],
+      "current_version_id": null,
+      "revision_resolved": false,
+      "checked_in_job_id": "8d12106e-12a9-4df0-b31f-1faceaa4bd5c",
+      "checked_at": "2026-09-16T04:50:04.206686+00:00",
+      "recruitment_status": "closed",
+      "verification_status": "needs_review",
+      "review_reasons": [
+        "목록 정보만 확인했습니다. 접수 회차·시간, 금액, 신청 자격은 원문 검증 전입니다.",
+        "최종 정정·취소 관계와 공공주택 세부 유형의 확인이 필요합니다.",
+        "정정 공고 후보입니다. 원공고와 연결 및 변경 내용 대조가 필요합니다."
+      ],
+      "evidence": [
+        {
+          "id": "LH-2015122300020605-10-03-evidence",
+          "url": "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1",
+          "document_version_id": "LH-2015122300020605-10-03-list",
+          "locator": "목록 API의 PAN_ID, PAN_NM, PAN_SS, PAN_NT_ST_DT, CLSG_DT. 첨부 검증 전.",
+          "checked_at": "2026-09-16T04:50:04.206686+00:00",
+          "method": "api"
+        }
+      ],
+      "units": [],
+      "listing": {
+        "status": "접수마감",
+        "posted_date": "2026.08.21",
+        "closing_date": "2026.09.02",
+        "official_url": "https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=2015122300020605&aisTpCd=10&ccrCnntSysDsCd=03&uppAisTpCd=06&mi=1026"
+      }
+    },
+    {
+      "id": "LH-2015122300020577-10-03",
+      "source_id": "LH",
+      "official_id": "2015122300020577",
+      "title": "서울번동3 행복주택 예비입주자 모집",
+      "housing_type": "행복주택",
+      "region_ids": [
+        "seoul"
+      ],
+      "scope": "unknown",
+      "versions": [
+        {
+          "id": "LH-2015122300020577-10-03-list",
+          "kind": "unclassified",
+          "related_version_ids": [],
+          "changed_fields": [],
+          "relationship_evidence_ids": [],
+          "checked_at": "2026-09-16T04:50:04.206686+00:00"
+        }
+      ],
+      "current_version_id": null,
+      "revision_resolved": false,
+      "checked_in_job_id": "8d12106e-12a9-4df0-b31f-1faceaa4bd5c",
+      "checked_at": "2026-09-16T04:50:04.206686+00:00",
+      "recruitment_status": "closed",
+      "verification_status": "needs_review",
+      "review_reasons": [
+        "목록 정보만 확인했습니다. 접수 회차·시간, 금액, 신청 자격은 원문 검증 전입니다.",
+        "최종 정정·취소 관계와 공공주택 세부 유형의 확인이 필요합니다."
+      ],
+      "evidence": [
+        {
+          "id": "LH-2015122300020577-10-03-evidence",
+          "url": "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1",
+          "document_version_id": "LH-2015122300020577-10-03-list",
+          "locator": "목록 API의 PAN_ID, PAN_NM, PAN_SS, PAN_NT_ST_DT, CLSG_DT. 첨부 검증 전.",
+          "checked_at": "2026-09-16T04:50:04.206686+00:00",
+          "method": "api"
+        }
+      ],
+      "units": [],
+      "listing": {
+        "status": "접수마감",
+        "posted_date": "2026.08.19",
+        "closing_date": "2026.09.02",
+        "official_url": "https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=2015122300020577&aisTpCd=10&ccrCnntSysDsCd=03&uppAisTpCd=06&mi=1026"
+      }
+    }
+  ],
+  "collection": {
+    "source": "LH",
+    "housing_type": "임대주택(06)",
+    "posted_filter": "2026.08.01",
+    "closing_filter": "2026.09.16",
+    "pages_fetched": 1,
+    "page_limit": 5,
+    "rows_fetched": 2,
+    "list_complete": true,
+    "date_filter_verified": true,
+    "scope_mismatch_count": 0
+  }
+}

@@ -1,0 +1,29 @@
+.venv/
+__pycache__/
+.env
+.env.*
+!.env.example
+node_modules/
+.expo/
+frontend/dist/
+frontend/template.tgz
+
+
+.secrets/
+*.dpapi
+
+# Local temporary files and generated caches
+/tmp/
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+.pytest_cache/
+.ruff_cache/
+# Credentials and signing keys
+*.pem
+*.key
+*.p12
+*.p8
+*.jks
+

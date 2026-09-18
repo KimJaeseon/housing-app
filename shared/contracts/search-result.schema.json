@@ -1,0 +1,764 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:housing:search-result:0.1.0",
+  "title": "Search result contract (draft)",
+  "$ref": "#/$defs/job",
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "document_version_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "method": {
+          "enum": [
+            "http",
+            "api",
+            "manual",
+            "synthetic"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "url",
+        "document_version_id",
+        "locator",
+        "checked_at",
+        "method"
+      ],
+      "additionalProperties": false
+    },
+    "fact": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "known",
+            "unknown",
+            "not_stated",
+            "not_applicable",
+            "announced_later"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "state",
+        "value",
+        "unit",
+        "reason",
+        "evidence_ids"
+      ],
+      "additionalProperties": false
+    },
+    "window": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audience": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "application",
+            "documents",
+            "results"
+          ]
+        },
+        "start": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "end": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "raw_schedule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "id",
+        "audience",
+        "kind",
+        "start",
+        "end",
+        "raw_schedule",
+        "evidence_ids"
+      ],
+      "additionalProperties": false
+    },
+    "version": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "original",
+            "correction",
+            "cancellation",
+            "repost",
+            "unclassified"
+          ]
+        },
+        "related_version_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "changed_fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "relationship_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "related_version_ids",
+        "changed_fields",
+        "relationship_evidence_ids",
+        "checked_at"
+      ],
+      "additionalProperties": false
+    },
+    "unit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "address": {
+          "$ref": "#/$defs/fact"
+        },
+        "deposit": {
+          "$ref": "#/$defs/fact"
+        },
+        "monthly_rent": {
+          "$ref": "#/$defs/fact"
+        },
+        "sale_price": {
+          "$ref": "#/$defs/fact"
+        },
+        "eligibility": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fact"
+          }
+        },
+        "windows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/window"
+          }
+        },
+        "exclusive_area": {
+          "$ref": "#/$defs/fact"
+        },
+        "supply_area": {
+          "$ref": "#/$defs/fact"
+        },
+        "total_households": {
+          "$ref": "#/$defs/fact"
+        },
+        "offered_households": {
+          "$ref": "#/$defs/fact"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "address",
+        "deposit",
+        "monthly_rent",
+        "sale_price",
+        "eligibility",
+        "windows"
+      ],
+      "additionalProperties": false
+    },
+    "notice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "official_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "housing_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "scope": {
+          "enum": [
+            "in_scope",
+            "out_of_scope",
+            "unknown"
+          ]
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/version"
+          }
+        },
+        "current_version_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revision_resolved": {
+          "type": "boolean"
+        },
+        "checked_in_job_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recruitment_status": {
+          "enum": [
+            "scheduled",
+            "open",
+            "closed",
+            "cancelled",
+            "unknown"
+          ]
+        },
+        "verification_status": {
+          "enum": [
+            "verified",
+            "needs_review"
+          ]
+        },
+        "review_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "units": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unit"
+          }
+        },
+        "listing": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "minLength": 1
+            },
+            "posted_date": {
+              "type": "string"
+            },
+            "closing_date": {
+              "type": "string"
+            },
+            "official_url": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "mobile_official_url": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "announcement_date": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "supply_info_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_system_code": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "housing_type_code": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "detail_type_code": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "status",
+            "posted_date",
+            "closing_date",
+            "official_url"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "official_id",
+        "title",
+        "housing_type",
+        "region_ids",
+        "scope",
+        "versions",
+        "current_version_id",
+        "revision_resolved",
+        "checked_in_job_id",
+        "checked_at",
+        "recruitment_status",
+        "verification_status",
+        "review_reasons",
+        "evidence",
+        "units"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "researching",
+            "verifying",
+            "completed",
+            "failed",
+            "cancelled",
+            "unsupported"
+          ]
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retryable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "checked_at",
+        "error_code",
+        "retryable"
+      ],
+      "additionalProperties": false
+    },
+    "job": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "researching",
+            "verifying",
+            "completed",
+            "partial",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "region": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "id",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "requested_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "uncovered_source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "notices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/notice"
+          }
+        },
+        "personalization": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "result": {
+              "enum": [
+                "not_requested",
+                "candidate",
+                "mismatch",
+                "needs_review"
+              ]
+            },
+            "unresolved_conditions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "enabled",
+            "result",
+            "unresolved_conditions"
+          ],
+          "additionalProperties": false
+        },
+        "excluded_notices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/notice"
+          }
+        },
+        "collection": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "const": "LH"
+            },
+            "housing_type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "posted_filter": {
+              "type": "string",
+              "minLength": 1
+            },
+            "closing_filter": {
+              "type": "string",
+              "minLength": 1
+            },
+            "pages_fetched": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "page_limit": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "rows_fetched": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "list_complete": {
+              "type": "boolean"
+            },
+            "date_filter_verified": {
+              "type": "boolean"
+            },
+            "scope_mismatch_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "source",
+            "housing_type",
+            "posted_filter",
+            "closing_filter",
+            "pages_fetched",
+            "page_limit",
+            "rows_fetched",
+            "list_complete",
+            "date_filter_verified",
+            "scope_mismatch_count"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "id",
+        "revision",
+        "status",
+        "region",
+        "requested_at",
+        "finished_at",
+        "sources",
+        "uncovered_source_ids",
+        "notices",
+        "personalization"
+      ],
+      "additionalProperties": false
+    },
+    "supply_result": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notice_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "researching",
+            "available",
+            "empty",
+            "failed"
+          ]
+        },
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "units": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unit"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/version"
+          }
+        }
+      },
+      "required": [
+        "job_id",
+        "notice_id",
+        "status",
+        "error_code",
+        "checked_at",
+        "units",
+        "evidence",
+        "versions"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

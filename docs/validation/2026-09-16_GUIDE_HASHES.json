@@ -1,0 +1,16 @@
+{
+  "source_docx": "docs\\OpenAPI\ud65c\uc6a9\uac00\uc774\ub4dc_\ud55c\uad6d\ud1a0\uc9c0\uc8fc\ud0dd\uacf5\uc0ac_\ubd84\uc591\uc784\ub300\uacf5\uace0\uc870\ud68c_20260708.docx",
+  "source_sha256": "3a204b4a144cd7de80bc35fefa0b2dcc4513ea25330bab28e759e0165bac4e62",
+  "files": {
+    "backend/lh_probe.py": "815d0087b0ca283d0b624a93be7986b74ea90ceff8356b7a92700cb96ccefe41",
+    "backend/lh_list.py": "8b3f926b39ce9fcf0e6e73691bb903aacc6cc7be81c164529bd9849e3e4c0a16",
+    "backend/lh_errors.py": "e336bd95fbe428e410dea9fa9b2af1167855003160bf0780d8edecfee79cab89",
+    "backend/lh_response.py": "e8334aa7b24151cb12a8fe9a1feb24ef88a0ed95b6d3368fa7528ba3a4140eb7",
+    "backend/lh_adapter.py": "6a4bd2a012d5856ab93c9cf10243f6f9cdd4dc21044921c0a6ca96ca29eea3e4",
+    "backend/test_lh_guide.py": "e72e05fb16e3d9edc3f9f0936d689ae9baac15d8e2feda32e43266820b01a24b",
+    "frontend/useSearchApi.ts": "c0069d52769383f8803980c4da549d252f686182e331bb226908232bcb5b1b5c",
+    "frontend/LiveNotice.tsx": "5ec8a67d11ea1e33e076749db9d749db6561f4a4a0cc4d98c54d0be9b0aa62f3",
+    "frontend/qa.mjs": "c0bab48c4074ab7f85e842cf98227e7e9dc6564df9575e27f7a82c42f8667ec8",
+    "shared/contracts/search-result.schema.json": "706807ac29b4ac1b6a9e427097cb20e9bc49b8f4b61ff8f62be533f35caba700"
+  }
+}

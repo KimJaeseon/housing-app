@@ -1,0 +1,31 @@
+test_all_failed (__main__.ContractCases.test_all_failed) ... ok
+test_attachment_missing (__main__.ContractCases.test_attachment_missing) ... ok
+test_cancelled (__main__.ContractCases.test_cancelled) ... ok
+test_cancelled_cannot_be_completed (__main__.ContractCases.test_cancelled_cannot_be_completed) ... ok
+test_closed_excluded_even_unverified (__main__.ContractCases.test_closed_excluded_even_unverified) ... ok
+test_correction_unresolved (__main__.ContractCases.test_correction_unresolved) ... ok
+test_documents_are_not_application (__main__.ContractCases.test_documents_are_not_application) ... ok
+test_end_exclusive (__main__.ContractCases.test_end_exclusive) ... ok
+test_examples (__main__.ContractCases.test_examples) ... ok
+test_missing_condition (__main__.ContractCases.test_missing_condition) ... ok
+test_missing_end (__main__.ContractCases.test_missing_end) ... ok
+test_missing_start (__main__.ContractCases.test_missing_start) ... ok
+test_multiple_rounds (__main__.ContractCases.test_multiple_rounds) ... ok
+test_naive_rejected (__main__.ContractCases.test_naive_rejected) ... ok
+test_no_conditions (__main__.ContractCases.test_no_conditions) ... ok
+test_no_sources (__main__.ContractCases.test_no_sources) ... ok
+test_no_windows (__main__.ContractCases.test_no_windows) ... ok
+test_partial (__main__.ContractCases.test_partial) ... ok
+test_personalization_optional (__main__.ContractCases.test_personalization_optional) ... ok
+test_private_excluded (__main__.ContractCases.test_private_excluded) ... ok
+test_reversed_window (__main__.ContractCases.test_reversed_window) ... ok
+test_stale_result (__main__.ContractCases.test_stale_result) ... ok
+test_start_inclusive (__main__.ContractCases.test_start_inclusive) ... ok
+test_timezone_equivalence (__main__.ContractCases.test_timezone_equivalence) ... ok
+test_uncovered_scope (__main__.ContractCases.test_uncovered_scope) ... ok
+test_verified_open (__main__.ContractCases.test_verified_open) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.002s
+
+OK

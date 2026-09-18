@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1.0",
+  "id": "synthetic-job-1",
+  "revision": 1,
+  "status": "researching",
+  "region": {
+    "id": "test-seoul",
+    "label": "서울특별시 (합성 식별자)"
+  },
+  "requested_at": "2026-09-10T09:00:00+09:00",
+  "finished_at": null,
+  "sources": [
+    {
+      "id": "synthetic-source",
+      "status": "researching",
+      "checked_at": null,
+      "error_code": null,
+      "retryable": false
+    }
+  ],
+  "uncovered_source_ids": [],
+  "notices": [],
+  "personalization": {
+    "enabled": false,
+    "result": "not_requested",
+    "unresolved_conditions": []
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "status": "available",
+  "error_code": null,
+  "checked_at": "2026-09-17T00:00:00+00:00",
+  "units": [
+    {
+      "id": "LH-10001-10-03-supply-1-unit",
+      "label": "합성 단지 · 26A",
+      "address": {
+        "state": "unknown",
+        "value": null,
+        "unit": null,
+        "reason": "해당 공급정보 응답에서 상세 주소를 확인하지 못했습니다.",
+        "evidence_ids": []
+      },
+      "deposit": {
+        "state": "known",
+        "value": 10000000,
+        "unit": "원",
+        "reason": null,
+        "evidence_ids": [
+          "LH-10001-10-03-supply-1"
+        ]
+      },
+      "monthly_rent": {
+        "state": "unknown",
+        "value": null,
+        "unit": "원/월",
+        "reason": "API 표시: 공고문 참조 · 공고문 확인 필요",
+        "evidence_ids": []
+      },
+      "sale_price": {
+        "state": "unknown",
+        "value": null,
+        "unit": null,
+        "reason": "분양가 확인 대상이 아닌 임대주택 공급정보입니다.",
+        "evidence_ids": []
+      },
+      "eligibility": [
+        {
+          "state": "unknown",
+          "value": null,
+          "unit": null,
+          "reason": "이 API는 주택형 공급정보입니다. 신청 자격은 공식 공고문 검증이 필요합니다.",
+          "evidence_ids": []
+        }
+      ],
+      "windows": [],
+      "exclusive_area": {
+        "state": "known",
+        "value": 26.12345678,
+        "unit": "㎡",
+        "reason": null,
+        "evidence_ids": [
+          "LH-10001-10-03-supply-1"
+        ]
+      },
+      "supply_area": {
+        "state": "unknown",
+        "value": null,
+        "unit": "㎡",
+        "reason": "API 항목의 단위를 확인하지 못했습니다.",
+        "evidence_ids": []
+      },
+      "total_households": {
+        "state": "known",
+        "value": 100,
+        "unit": "세대",
+        "reason": null,
+        "evidence_ids": [
+          "LH-10001-10-03-supply-1"
+        ]
+      },
+      "offered_households": {
+        "state": "known",
+        "value": 3,
+        "unit": "세대",
+        "reason": null,
+        "evidence_ids": [
+          "LH-10001-10-03-supply-1"
+        ]
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "id": "LH-10001-10-03-supply-1",
+      "url": "https://apis.data.go.kr/B552555/lhLeaseNoticeSplInfo1/getLeaseNoticeSplInfo1",
+      "document_version_id": "LH-10001-10-03-supply",
+      "locator": "PAN_ID=10001; dsList01[0] 및 dsList01Nm. 최종 공고문 대조 전.",
+      "checked_at": "2026-09-17T00:00:00+00:00",
+      "method": "api"
+    }
+  ],
+  "versions": [
+    {
+      "id": "LH-10001-10-03-supply",
+      "kind": "unclassified",
+      "related_version_ids": [],
+      "changed_fields": [],
+      "relationship_evidence_ids": [],
+      "checked_at": "2026-09-17T00:00:00+00:00"
+    }
+  ],
+  "job_id": "synthetic-list-review",
+  "notice_id": "LH-10001-10-03"
+}
