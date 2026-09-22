@@ -55,6 +55,41 @@ for(const mode of ['empty','failed','malformed','delay']){
  }else await scan('supply-'+mode);
 }
 await page.unroute('**/v1/search-jobs/*/notices/*/supply');
+const documentFixture=JSON.parse(fs.readFileSync('fixtures/document.json','utf8'));
+let documentMode='reviewed';
+await page.route('**/v1/search-jobs/*/notices/*/document',async route=>{
+ const r=structuredClone(documentFixture);
+ if(documentMode==='delay')await new Promise(resolve=>setTimeout(resolve,1200));
+ if(documentMode==='changed'){r.reviewed=false;r.facts=[];r.warnings=['문서 또는 정정 관계가 검토 기록과 달라 기존 확인값을 보류했습니다. 재검토가 필요합니다.'];}
+ if(documentMode==='failed'){r.status='failed';r.error_code='DOCUMENT_ACCESS_DENIED';r.reviewed=false;r.facts=[];r.pdf_url=null;}
+ if(documentMode==='malformed')r.notice_id='wrong';
+ return route.fulfill({json:r});
+});
+for(const mode of ['reviewed','changed','failed','malformed','delay']){
+ documentMode=mode;
+ await page.getByRole('button',{name:'공고문 항목 확인',exact:true}).click();
+ if(mode==='reviewed'){
+  await page.getByText('21A · 청년(소득 있음) 기본 임대조건',{exact:true}).waitFor();
+  const amount=page.getByText('보증금 50,400,000원 · 월 임대료 214,200원. 보증금 원문 단위 천원을 원으로 환산',{exact:true});
+  checks.push({name:'document-conditional-rent',passed:await amount.count()===1});
+  await amount.scrollIntoViewIfNeeded();await scan('document-reviewed');
+  await page.setViewportSize({width:320,height:640});await scan('document-narrow');
+  checks.push({name:'document-no-overflow',passed:await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)});
+  await page.setViewportSize({width:390,height:844});
+ }else if(mode==='delay'){
+  await scan('document-loading');await page.getByRole('button',{name:'검색 결과로 돌아가기'}).click();await page.waitForTimeout(1500);
+  checks.push({name:'document-late-response-ignored',passed:await page.getByText('21A · 청년(소득 있음) 기본 임대조건',{exact:true}).count()===0});
+  await page.getByRole('button',{name:'합성 확인 필요 행복주택 상세 보기',exact:true}).click();
+  break;
+ }else{
+  const message=mode==='changed'?'PDF는 확보했지만 항목 검토가 필요합니다. 이전 확인값은 표시하지 않습니다.':mode==='failed'?'공식 공고문을 확인하지 못했습니다. 원문 링크에서 직접 확인해 주세요.':'공고문 응답을 확인하지 못했습니다. 다시 시도해 주세요.';
+  await page.getByText(message,{exact:true}).waitFor();await scan('document-'+mode);
+  checks.push({name:'document-'+mode+'-no-facts',passed:await page.getByText('21A · 청년(소득 있음) 기본 임대조건',{exact:true}).count()===0});
+ }
+ await page.getByRole('button',{name:'검색 결과로 돌아가기'}).click();
+ await page.getByRole('button',{name:'합성 확인 필요 행복주택 상세 보기',exact:true}).click();
+}
+await page.unroute('**/v1/search-jobs/*/notices/*/document');
 checks.push({name:'official-link-present',passed:await page.getByRole('button',{name:'LH 공식 원문 열기 · 외부 브라우저로 이동'}).count()===1});
 await context.route('https://apply.lh.or.kr/**',r=>r.fulfill({contentType:'text/html',body:'<html lang="ko"><title>Official link test</title><body>Synthetic external destination</body></html>'}));
 const popupPromise=page.waitForEvent('popup');

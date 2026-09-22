@@ -1,0 +1,289 @@
+{
+  "date": "2026-09-22",
+  "backend_tests": 131,
+  "reference_tests": 26,
+  "typescript": "passed",
+  "web_export": "passed",
+  "web_summary": {
+    "results.json": {
+      "axe_states": 36,
+      "violations": 0,
+      "behavior_checks": 18,
+      "behavior_failures": 0
+    },
+    "live-results.json": {
+      "axe_states": 5,
+      "violations": 0,
+      "behavior_checks": 4,
+      "behavior_failures": 0
+    }
+  },
+  "web_checks": {
+    "results.json": [
+      {
+        "name": "live-search",
+        "violations": []
+      },
+      {
+        "name": "live-server-response",
+        "violations": []
+      },
+      {
+        "name": "api-cancel-late-response",
+        "violations": []
+      },
+      {
+        "name": "api-network-failure",
+        "violations": []
+      },
+      {
+        "name": "list-verified-empty",
+        "violations": []
+      },
+      {
+        "name": "list-review",
+        "violations": []
+      },
+      {
+        "name": "list-detail",
+        "violations": []
+      },
+      {
+        "name": "supply-area-precision",
+        "passed": true
+      },
+      {
+        "name": "supply-unknown-not-zero",
+        "passed": true
+      },
+      {
+        "name": "supply-available",
+        "violations": []
+      },
+      {
+        "name": "supply-narrow",
+        "violations": []
+      },
+      {
+        "name": "supply-no-overflow",
+        "passed": true
+      },
+      {
+        "name": "supply-empty",
+        "violations": []
+      },
+      {
+        "name": "supply-failed",
+        "violations": []
+      },
+      {
+        "name": "supply-malformed",
+        "violations": []
+      },
+      {
+        "name": "supply-loading",
+        "violations": []
+      },
+      {
+        "name": "supply-late-response-ignored",
+        "passed": true
+      },
+      {
+        "name": "document-conditional-rent",
+        "passed": true
+      },
+      {
+        "name": "document-reviewed",
+        "violations": []
+      },
+      {
+        "name": "document-narrow",
+        "violations": []
+      },
+      {
+        "name": "document-no-overflow",
+        "passed": true
+      },
+      {
+        "name": "document-changed",
+        "violations": []
+      },
+      {
+        "name": "document-changed-no-facts",
+        "passed": true
+      },
+      {
+        "name": "document-failed",
+        "violations": []
+      },
+      {
+        "name": "document-failed-no-facts",
+        "passed": true
+      },
+      {
+        "name": "document-malformed",
+        "violations": []
+      },
+      {
+        "name": "document-malformed-no-facts",
+        "passed": true
+      },
+      {
+        "name": "document-loading",
+        "violations": []
+      },
+      {
+        "name": "document-late-response-ignored",
+        "passed": true
+      },
+      {
+        "name": "official-link-present",
+        "passed": true
+      },
+      {
+        "name": "official-link-destination",
+        "passed": true
+      },
+      {
+        "name": "list-return-focus",
+        "passed": true
+      },
+      {
+        "name": "closed-not-in-review-tab",
+        "passed": true
+      },
+      {
+        "name": "list-excluded",
+        "violations": []
+      },
+      {
+        "name": "list-excluded-detail",
+        "violations": []
+      },
+      {
+        "name": "list-page-limit",
+        "violations": []
+      },
+      {
+        "name": "legacy-official-link",
+        "passed": true
+      },
+      {
+        "name": "legacy-official-link-screen",
+        "violations": []
+      },
+      {
+        "name": "missing-official-link",
+        "passed": true
+      },
+      {
+        "name": "missing-official-link-screen",
+        "violations": []
+      },
+      {
+        "name": "unsafe-official-link",
+        "passed": true
+      },
+      {
+        "name": "unsafe-official-link-screen",
+        "violations": []
+      },
+      {
+        "name": "api-key-expired",
+        "violations": []
+      },
+      {
+        "name": "search",
+        "violations": []
+      },
+      {
+        "name": "invalid-region",
+        "violations": []
+      },
+      {
+        "name": "results",
+        "violations": []
+      },
+      {
+        "name": "detail",
+        "violations": []
+      },
+      {
+        "name": "return-focus",
+        "passed": true
+      },
+      {
+        "name": "review",
+        "violations": []
+      },
+      {
+        "name": "전체 조사 실패",
+        "violations": []
+      },
+      {
+        "name": "결과 없음",
+        "violations": []
+      },
+      {
+        "name": "일부 출처 실패",
+        "violations": []
+      },
+      {
+        "name": "cancelled",
+        "violations": []
+      },
+      {
+        "name": "narrow",
+        "violations": []
+      }
+    ],
+    "live-results.json": [
+      {
+        "name": "actual-lh-list",
+        "violations": []
+      },
+      {
+        "name": "actual-lh-excluded",
+        "violations": []
+      },
+      {
+        "name": "actual-lh-detail",
+        "violations": []
+      },
+      {
+        "name": "actual-lh-detail-narrow",
+        "violations": []
+      },
+      {
+        "name": "narrow-no-horizontal-overflow",
+        "passed": true
+      },
+      {
+        "name": "actual-lh-document",
+        "violations": []
+      },
+      {
+        "name": "actual-document-price",
+        "passed": true
+      },
+      {
+        "name": "actual-document-no-overflow",
+        "passed": true
+      },
+      {
+        "name": "actual-return-focus",
+        "passed": true
+      }
+    ]
+  },
+  "key_scan": {
+    "files": 101,
+    "matches": 0
+  },
+  "native_voiceover_talkback": "not_run",
+  "live_document": "2026-09-22_DOCUMENT_LIVE_RESPONSE.json",
+  "limitations": [
+    "One reviewed PDF profile; not a generic eligibility verifier",
+    "Separate amendment notices and full eligibility rules remain unverified"
+  ]
+}

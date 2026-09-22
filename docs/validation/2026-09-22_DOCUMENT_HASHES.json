@@ -1,0 +1,15 @@
+{
+  "backend/lh_document.py": "9e40068f6781e119fb6589e049ddc32e8721caf865eddbe3aa6ac65482f0c8e6",
+  "backend/document_reviews/2015122300020605.json": "7c74b4ca90d050d97040f9b80f05bf070f7afaf64cec6c9966b6264baa5b50af",
+  "backend/app.py": "1af102f27dbf7ef6ce65a1bb975d6b4760712af9ca08c5145f12c69f4960826a",
+  "backend/validation.py": "0f569e757267956fe1d22f4b4bf9e0c915de7dcb875fffd7b22c3f26824b58a8",
+  "backend/serve_lh.py": "84b98aebe67c348f49c428415a1b456d37f1e43d228df77568871509c2934956",
+  "backend/test_lh_document.py": "907e426ebc088745d9ac70f1655fa702fc26b5c19ff208169f5d16eeb44189db",
+  "frontend/App.tsx": "2a698cc827a64dd3d2b2d0e629ee0a4b956ecd4a0b626bbefd8130ccc4138799",
+  "frontend/LiveNotice.tsx": "86542ba12b21b3ed4b4d860634bb965648709d118fab15c25892d322757c4667",
+  "frontend/useSearchApi.ts": "11ad9ef88d39cc26fdd2454d628f154768f82ac4ced0b1147aa972fd2b91dfda",
+  "frontend/qa.mjs": "8b3f0eb0b3383d354245e15650cfaad04690b2030f9dbf0a676e1b727187dfc1",
+  "frontend/qa-live-list.mjs": "a4a96babd740df5f6608136f50fa8e4dabe3220e552c3e8cee16ccbe3165d830",
+  "shared/contracts/search-result.schema.json": "7f49251a9d76d368a9356fab0df640b47771747f615416ae70e448fb79bdbab2",
+  "docs/references/lh-notice-2015122300020605.pdf": "5deb8acbdb2112f274f67c3c03e01f754fa4fc986d45c30868e16bc001532f6f"
+}

@@ -759,6 +759,143 @@
         "versions"
       ],
       "additionalProperties": false
+    },
+    "document_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "notice_id",
+        "status",
+        "error_code",
+        "checked_at",
+        "source_url",
+        "pdf_url",
+        "sha256",
+        "filename",
+        "current_id",
+        "original_id",
+        "reviewed",
+        "facts",
+        "warnings"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notice_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "researching",
+            "partial",
+            "failed"
+          ]
+        },
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "checked_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pdf_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "filename": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "current_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "original_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewed": {
+          "type": "boolean"
+        },
+        "facts": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "category",
+              "label",
+              "value",
+              "page"
+            ],
+            "properties": {
+              "category": {
+                "enum": [
+                  "address",
+                  "schedule",
+                  "rent",
+                  "eligibility",
+                  "correction"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "value": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 200
+              }
+            }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      }
     }
   }
 }

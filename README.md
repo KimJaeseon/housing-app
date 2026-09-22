@@ -1,6 +1,6 @@
 # 수도권 공공주택 앱
 
-현재 단계: LH 임대주택 목록의 기간·페이지 조회, 확인 필요/마감·취소 구분, 앱 목록·상세·공식 원문 연결. 원문 검증 완료 공고와 로그인·저장 기능은 아직 미구현이다.
+현재 단계: LH 임대주택 목록·공급정보 조회, 확인 필요/마감·취소 구분, 표본 공고문 17개 항목의 근거 표시 및 파일 변경 감지. 원문 검증 완료 공고와 로그인·저장 기능은 아직 미구현이다.
 
 - [프로그램 명세서](docs/PROGRAM_SPECIFICATION.md) — 기능·화면·API·데이터·현재 구현 및 후속 개발 기준
 - [다른 PC 설치·실행·테스트 가이드](docs/guides/NEW_PC_SETUP.md) — 최초 clone, 환경 설치, 키 등록, pull 후 재검사
@@ -53,3 +53,6 @@ frontend: `pnpm exec tsc --noEmit`, `pnpm exec expo export --platform web`, `nod
 프론트엔드·백엔드·공통 계약·문서를 하나의 GitHub 저장소로 관리한다. [GitHub 작업 안내](docs/guides/GITHUB_WORKFLOW.md)를 따른다.
 
 
+
+
+2026-09-22: 중단된 원문 항목 확인 기능을 연결했다. 서울번동3 정정공고 PDF와 검토 기록이 일치할 때만 접수 일정·대상별 금액 등을 표시한다. [원문 기능 검증 기록](docs/validation/2026-09-22_DOCUMENT_INTEGRATION.md)을 참고한다.

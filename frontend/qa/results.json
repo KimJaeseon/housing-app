@@ -68,6 +68,54 @@
     "passed": true
   },
   {
+    "name": "document-conditional-rent",
+    "passed": true
+  },
+  {
+    "name": "document-reviewed",
+    "violations": []
+  },
+  {
+    "name": "document-narrow",
+    "violations": []
+  },
+  {
+    "name": "document-no-overflow",
+    "passed": true
+  },
+  {
+    "name": "document-changed",
+    "violations": []
+  },
+  {
+    "name": "document-changed-no-facts",
+    "passed": true
+  },
+  {
+    "name": "document-failed",
+    "violations": []
+  },
+  {
+    "name": "document-failed-no-facts",
+    "passed": true
+  },
+  {
+    "name": "document-malformed",
+    "violations": []
+  },
+  {
+    "name": "document-malformed-no-facts",
+    "passed": true
+  },
+  {
+    "name": "document-loading",
+    "violations": []
+  },
+  {
+    "name": "document-late-response-ignored",
+    "passed": true
+  },
+  {
     "name": "official-link-present",
     "passed": true
   },

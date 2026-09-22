@@ -65,3 +65,21 @@ def validate_supply(data):
             if fact['state']=='known' and (fact['value'] is None or not fact['evidence_ids']):raise ValueError('unsupported known supply value')
             if fact['state']=='unknown' and (fact['value'] is not None or not fact['reason']):raise ValueError('invalid unknown supply value')
     return data
+
+
+def validate_document(data):
+    schema={'$defs':SCHEMA['$defs'],'$ref':'#/$defs/document_result'}
+    if list(Draft202012Validator(schema,format_checker=FormatChecker()).iter_errors(data)):raise ValueError('invalid document schema')
+    if (data['status']=='failed')!=(data['error_code'] is not None):raise ValueError('invalid document error')
+    if data['status']!='researching' and not data['checked_at']:raise ValueError('missing document check time')
+    if data['status']!='partial' and (data['reviewed'] or data['facts']):raise ValueError('unexpected document facts')
+    if bool(data['facts'])!=data['reviewed']:raise ValueError('unreviewed document facts')
+    if data['status']=='partial':
+        if not all(data[k] for k in ('source_url','pdf_url','sha256','filename','current_id')):raise ValueError('missing document provenance')
+        from urllib.parse import urlsplit,parse_qs
+        import re
+        url=urlsplit(data['source_url'])
+        if url.scheme!='https' or url.netloc!='apply.lh.or.kr' or url.path!='/lhapply/apply/wt/wrtanc/selectWrtancInfo.do' or url.fragment:raise ValueError('invalid document source')
+        if not re.fullmatch(r'https://apply\.lh\.or\.kr/lhapply/lhFile\.do\?fileid=[0-9]{1,16}',data['pdf_url']):raise ValueError('invalid PDF source')
+        if data['reviewed'] and parse_qs(url.query).get('panId')!=[data['current_id']]:raise ValueError('superseded document')
+    return data

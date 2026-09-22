@@ -1,11 +1,11 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {AccessibilityInfo,Linking,Platform,Pressable,StyleSheet,Text,View} from 'react-native';
-import {Collection,Notice,SupplyResult,SupplyFact} from './useSearchApi';
+import {Collection,Notice,SupplyResult,SupplyFact,DocumentResult} from './useSearchApi';
 const s=StyleSheet.create({panel:{backgroundColor:'#FFFFFF',borderWidth:1,borderColor:'#C7D4CC',borderRadius:20,padding:20,gap:14},title:{fontSize:21,lineHeight:30,fontWeight:'700',color:'#142F2A'},body:{fontSize:17,lineHeight:27,color:'#34483F'},button:{minHeight:52,padding:14,backgroundColor:'#EEF4EE',borderColor:'#17664F',borderWidth:2,borderRadius:12,justifyContent:'center'},buttonText:{fontSize:17,lineHeight:26,fontWeight:'600',color:'#142F2A'},error:{fontSize:17,lineHeight:27,color:'#9A2525'}});
 export function LiveButton({label,onPress,buttonRef}:any){return <Pressable ref={buttonRef} accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={({focused}:any)=>[s.button,focused&&{borderWidth:3,borderColor:'#142F2A'}]}><Text style={s.buttonText}>{label}</Text></Pressable>;}
 export function ScopeSummary({collection:c}:{collection:Collection}){return <View style={s.panel}><Text accessibilityRole="header" style={s.title}>이번 조회 범위</Text><Text style={s.body}>LH · 서울특별시 · {c.housing_type}</Text><Text style={s.body}>게시일 조회 기간: {c.posted_filter} ~ {c.closing_filter}. 이 기간 밖의 공고는 조사하지 않았습니다.</Text><Text style={s.body}>목록 {c.pages_fetched}페이지, {c.rows_fetched}건 확인. {c.list_complete?'반환된 총건수까지 조회했습니다.':'페이지 제한 또는 오류로 목록 일부만 조회했습니다.'}</Text><Text style={s.body}>{c.date_filter_verified?'요청한 게시일 기간이 응답에 반영됐습니다.':'조회 기간의 적용을 확인하지 못했습니다.'} 원문 검증은 남아 있습니다. 확인된 공고가 0건이어도 서울에 모집 공고가 없다는 의미는 아닙니다.</Text>{c.scope_mismatch_count>0&&<Text style={s.body}>지역·유형이 다른 응답 {c.scope_mismatch_count}건을 보류했습니다.</Text>}</View>;}
 export function NoticeCard({notice:n,onOpen,buttonRef,excluded=false}:{notice:Notice;onOpen:()=>void;buttonRef:any;excluded?:boolean}){return <View style={s.panel}><Text accessibilityRole="header" style={s.title}>{n.title}</Text><Text style={s.body}>서울특별시 · {n.housing_type}</Text><Text style={s.body}>{excluded?'검색 대상에서 제외됨 · 마감 또는 취소':'확인 필요 · 신청 가능 여부 미확인'}</Text><Text style={s.body}>LH 목록 표시: {n.listing?.status||'미확인'}</Text><Text style={s.body}>접수 일정·금액·자격: 원문 확인 필요</Text><LiveButton buttonRef={buttonRef} label={`${n.title} 상세 보기`} onPress={onOpen}/></View>;}
-export function NoticeDetail({notice:n,loadSupply}:{notice:Notice;loadSupply:(id:string,signal:AbortSignal)=>Promise<SupplyResult>}){
+export function NoticeDetail({notice:n,loadSupply,loadDocument}:{notice:Notice;loadSupply:(id:string,signal:AbortSignal)=>Promise<SupplyResult>;loadDocument:(id:string,signal:AbortSignal)=>Promise<DocumentResult>}){
  const [linkError,setLinkError]=useState('');const url=n.listing?.official_url;
  const safe=(()=>{if(!url)return false;try{const parsed=new URL(url);if(parsed.origin!=='https://apply.lh.or.kr'||parsed.hash||parsed.username||parsed.password)return false;
  const keys=Array.from(parsed.searchParams.keys());if(new Set(keys).size!==keys.length)return false;
@@ -16,12 +16,13 @@ export function NoticeDetail({notice:n,loadSupply}:{notice:Notice;loadSupply:(id
  return <View style={s.panel}><Text style={s.body}>원문 검증 전 · 이 화면으로 신청 자격을 확정하지 마세요.</Text>{[
  ['지역·유형',`서울특별시 · ${n.housing_type}`],['목록 상태',n.listing?.status||'미확인'],
  ['목록 게시일',n.listing?.posted_date||'미확인'],['목록 마감일',n.listing?.closing_date||'미확인'],
- ['실제 신청 접수 일정','미확인 · 목록 마감일을 접수 종료시각으로 사용하지 않습니다'],['보증금·월 임대료','미확인 · 0원이 아닙니다'],['신청 자격','공식 원문 검증 전'],
+ ['목록 API의 접수 일정','목록만으로 접수 시각을 확정하지 않습니다. 아래 공고문 항목 확인에서 추가 확인하세요.'],['목록 API의 금액','목록만으로 금액을 확인할 수 없습니다. 아래 공고문 항목 확인에서 대상별 조건을 확인하세요.'],['신청 자격','공식 원문 검증 전'],
  ['확인 시점',new Date(n.checked_at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})+' (한국 시간)'],
  ['확인 근거','LH 공식 목록 API. 첨부 공고문·금액·자격·최종 정정 관계는 미검증']
  ].map(([label,value])=><View key={label}><Text accessibilityRole="header" style={s.title}>{label}</Text><Text style={s.body}>{value}</Text></View>)}
  <Text accessibilityRole="header" style={s.title}>확인이 필요한 이유</Text>{n.review_reasons.map((reason,index)=><Text key={index} style={s.body}>{reason}</Text>)}
  {safe?<LiveButton label="LH 공식 원문 열기 · 외부 브라우저로 이동" onPress={()=>void open()}/>:<Text style={s.body}>안전한 공식 원문 링크를 확인하지 못했습니다.</Text>}
+ <DocumentPanel noticeId={n.id} loadDocument={loadDocument}/>
  <SupplyPanel noticeId={n.id} loadSupply={loadSupply}/>
  {!!linkError&&<Text accessibilityRole="alert" style={s.error}>{linkError}</Text>}
  </View>;
@@ -59,5 +60,30 @@ function SupplyPanel({noticeId,loadSupply}:{noticeId:string;loadSupply:(id:strin
  <Text style={s.body}>근거: LH 공고별 공급정보 API · 최종 정정 공고문 대조 전</Text>
  {result.evidence.filter(e=>u.deposit.evidence_ids.includes(e.id)||u.monthly_rent.evidence_ids.includes(e.id)||u.exclusive_area?.evidence_ids.includes(e.id)).map(e=><Text key={e.id} style={s.body}>{e.locator}</Text>)}
  </View>)}
+ </View>;
+}
+
+function DocumentPanel({noticeId,loadDocument}:{noticeId:string;loadDocument:(id:string,signal:AbortSignal)=>Promise<DocumentResult>}){
+ const [result,setResult]=useState<DocumentResult|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[linkError,setLinkError]=useState('');
+ const active=useRef<AbortController|null>(null);
+ useEffect(()=>()=>active.current?.abort(),[]);
+ async function load(){
+  if(active.current)return;const abort=new AbortController();active.current=abort;setBusy(true);setError('');
+  try{const r=await loadDocument(noticeId,abort.signal);if(!abort.signal.aborted)setResult(r);}
+  catch{if(!abort.signal.aborted)setError('공고문 응답을 확인하지 못했습니다. 다시 시도해 주세요.');}
+  finally{if(!abort.signal.aborted){setBusy(false);active.current=null;}}
+ }
+ async function openPdf(){try{if(!result?.pdf_url||!/^https:\/\/apply\.lh\.or\.kr\/lhapply\/lhFile\.do\?fileid=[0-9]{1,16}$/.test(result.pdf_url))throw new Error();await Linking.openURL(result.pdf_url);}catch{setLinkError('첨부 PDF를 열지 못했습니다. LH 공식 원문에서 확인해 주세요.');}}
+ const status=busy?'첨부 공고문 확인 중':error||(result?.status==='failed'?(result.error_code==='DOCUMENT_NOT_ENABLED'?'원문 확인 기능이 비활성화되어 있습니다. 실행 안내대로 서버를 재시작해 주세요.':'공식 공고문을 확인하지 못했습니다. 원문 링크에서 직접 확인해 주세요.'):result?.reviewed?'현재 PDF와 검토 기록이 일치합니다. 아래 항목만 확인했으며 전체 신청 자격 검증은 남아 있습니다.':result?.status==='partial'?'PDF는 확보했지만 항목 검토가 필요합니다. 이전 확인값은 표시하지 않습니다.':'');
+ useEffect(()=>{if(status&&Platform.OS==='ios')AccessibilityInfo.announceForAccessibilityWithOptions(status,{queue:true});},[status]);
+ return <View style={{gap:14}}><Text accessibilityRole="header" style={s.title}>첨부 공고문 항목 확인</Text>
+ <Text style={s.body}>공식 PDF를 새로 받아 검토된 파일과 대조합니다. 현재 항목별 검토 대상은 서울번동3 정정공고 한 건입니다. 다른 문서나 변경된 파일은 재검토가 필요합니다.</Text>
+ <Pressable accessibilityRole="button" accessibilityLabel="공고문 항목 확인" accessibilityState={{disabled:busy,busy}} disabled={busy} onPress={()=>void load()} style={({focused}:any)=>[s.button,focused&&{borderWidth:3,borderColor:'#142F2A'}]}><Text style={s.buttonText}>{busy?'첨부 공고문 확인 중':'공고문 항목 확인'}</Text></Pressable>
+ <Text accessibilityLiveRegion="polite" style={s.body}>{status}</Text>
+ {result?.checked_at&&<Text style={s.body}>원문 조회: {new Date(result.checked_at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} (한국 시간)</Text>}
+ {result?.facts.map((f,i)=><View key={i}><Text accessibilityRole="header" style={s.title}>{f.label}</Text><Text style={s.body}>{f.value}</Text><Text style={s.body}>근거: 첨부 공고문 {f.page}쪽</Text></View>)}
+ {result?.warnings.map((w,i)=><Text key={i} style={s.body}>{w}</Text>)}
+ {result?.pdf_url&&<LiveButton label="첨부 공고문 PDF 열기 · 외부 브라우저로 이동" onPress={()=>void openPdf()}/>}
+ {!!linkError&&<Text accessibilityRole="alert" style={s.error}>{linkError}</Text>}
  </View>;
 }

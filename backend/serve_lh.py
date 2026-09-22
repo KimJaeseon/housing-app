@@ -19,7 +19,7 @@ def main():
     try:key=normalize_key(key)
     except ValueError:
         print('Invalid general service key');return 2
-    settings={'LH_ENABLE_SUPPLY':'1','LH_ENABLE_LIST':'1','LH_ENABLE_PROBE':'1','LH_POSTED_DATE':a.posted,'LH_CLOSING_DATE':a.closing}
+    settings={'LH_ENABLE_DOCUMENT':'1','LH_ENABLE_SUPPLY':'1','LH_ENABLE_LIST':'1','LH_ENABLE_PROBE':'1','LH_POSTED_DATE':a.posted,'LH_CLOSING_DATE':a.closing}
     previous={name:os.environ.get(name) for name in settings}
     os.environ.update(settings)
     try:uvicorn.run('backend.app:app',host=a.host,port=8000,access_log=False)

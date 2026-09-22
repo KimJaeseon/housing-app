@@ -20,6 +20,18 @@
     "passed": true
   },
   {
+    "name": "actual-lh-document",
+    "violations": []
+  },
+  {
+    "name": "actual-document-price",
+    "passed": true
+  },
+  {
+    "name": "actual-document-no-overflow",
+    "passed": true
+  },
+  {
     "name": "actual-return-focus",
     "passed": true
   }

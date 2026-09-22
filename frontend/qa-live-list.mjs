@@ -8,7 +8,7 @@ import path from 'node:path';
 // Explicit live integration test: one real LH search; no response interception.
 // Refuse to reuse or stop a server belonging to the user.
 for(const port of [8000,18800]){await new Promise((resolve,reject)=>{const probe=net.createServer();probe.once('error',()=>reject(new Error(`Port ${port} is in use; stop your development server before QA`)));probe.listen(port,'127.0.0.1',()=>probe.close(resolve));});}
-const env={...process.env,LH_ENABLE_LIST:'1',LH_POSTED_DATE:'2026.08.01',LH_CLOSING_DATE:'2026.09.16'};
+const env={...process.env,LH_ENABLE_LIST:'1',LH_ENABLE_DOCUMENT:'1',LH_POSTED_DATE:'2026.08.01',LH_CLOSING_DATE:'2026.09.16'};
 const backend=spawn(path.resolve('../.venv/Scripts/python.exe'),['-m','uvicorn','backend.app:app','--host','127.0.0.1','--port','8000','--no-access-log'],{cwd:'..',env,stdio:'ignore'});
 let server,browser;
 try{
@@ -23,6 +23,11 @@ try{
  await page.setViewportSize({width:320,height:640});await scan('actual-lh-detail-narrow');
  await page.getByRole('button',{name:'LH 공식 원문 열기 · 외부 브라우저로 이동'}).scrollIntoViewIfNeeded();await page.screenshot({path:'qa/actual-lh-detail-bottom.png'});
  checks.push({name:'narrow-no-horizontal-overflow',passed:await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)});
+ await page.getByRole('button',{name:'공고문 항목 확인',exact:true}).click();
+ await page.getByText('현재 PDF와 검토 기록이 일치합니다.',{exact:false}).waitFor({timeout:35000});
+ await page.getByText('21A · 청년(소득 있음) 기본 임대조건',{exact:true}).scrollIntoViewIfNeeded();await scan('actual-lh-document');
+ checks.push({name:'actual-document-price',passed:await page.getByText('보증금 50,400,000원 · 월 임대료 214,200원. 보증금 원문 단위 천원을 원으로 환산',{exact:true}).count()===1});
+ checks.push({name:'actual-document-no-overflow',passed:await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)});
  await page.getByRole('button',{name:'검색 결과로 돌아가기'}).click();await page.waitForTimeout(200);checks.push({name:'actual-return-focus',passed:await detail.evaluate(el=>el===document.activeElement)});
  fs.writeFileSync('qa/live-results.json',JSON.stringify(checks,null,2));console.log(JSON.stringify(checks));if(checks.some(c=>c.violations?.length||c.passed===false))process.exitCode=1;
 }finally{if(browser)await browser.close();if(server)server.close();backend.kill();}

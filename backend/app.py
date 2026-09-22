@@ -9,7 +9,8 @@ from uuid import uuid4
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI,Header,HTTPException
 from pydantic import BaseModel,ConfigDict
-from backend.validation import validate_result, validate_supply
+from backend.validation import validate_result, validate_supply, validate_document
+from backend.lh_document import fetch_document, empty_document
 from backend.lh_supply import fetch_supply
 from backend.lh_adapter import collect
 from backend.lh_list import collect_list
@@ -20,7 +21,7 @@ class Search(BaseModel):
     region:str
 REGIONS={'서울':'서울특별시','서울시':'서울특별시','서울특별시':'서울특별시','인천':'인천광역시','인천광역시':'인천광역시'}
 def now():return datetime.now(timezone.utc).isoformat()
-def create_app(collector=collect,executor=None,supplier=fetch_supply):
+def create_app(collector=collect,executor=None,supplier=fetch_supply,documenter=fetch_document):
     pool=executor or ThreadPoolExecutor(max_workers=2,thread_name_prefix='housing')
     @asynccontextmanager
     async def lifespan(app):
@@ -28,7 +29,7 @@ def create_app(collector=collect,executor=None,supplier=fetch_supply):
         if executor is None:pool.shutdown(wait=True,cancel_futures=True)
     app=FastAPI(title='Housing local search adapter',version='0.2.0',lifespan=lifespan)
     app.add_middleware(CORSMiddleware,allow_origins=['http://localhost:8081','http://127.0.0.1:8081','http://127.0.0.1:18800'],allow_methods=['GET','POST'],allow_headers=['Content-Type','X-Session-Token','Idempotency-Key'])
-    jobs={};keys={};supplies={};lock=RLock();slots=BoundedSemaphore(8)
+    jobs={};keys={};supplies={};documents={};lock=RLock();slots=BoundedSemaphore(8)
     def owner(token):
         if not token or len(token)<32 or len(token)>128:raise HTTPException(401,'SESSION_TOKEN_REQUIRED')
         return sha256(token.encode()).hexdigest()
@@ -136,6 +137,31 @@ def create_app(collector=collect,executor=None,supplier=fetch_supply):
             supply_notice(ident,notice_id,x_session_token)
             if (ident,notice_id) not in supplies:raise HTTPException(404,'SUPPLY_NOT_REQUESTED')
             return deepcopy(supplies[(ident,notice_id)])
+    def document_work(ident,notice):
+        try:
+            try:
+                result=documenter(notice);result.update(job_id=ident,notice_id=notice['id']);validate_document(result)
+            except Exception:result=dict(empty_document('failed','DOCUMENT_RESPONSE_UNCONFIRMED'),job_id=ident,notice_id=notice['id'])
+            with lock:documents[(ident,notice['id'])]=result
+        finally:slots.release()
+    @app.post('/v1/search-jobs/{ident}/notices/{notice_id}/document',status_code=202)
+    def document_create(ident:str,notice_id:str,x_session_token:str=Header(default='')):
+        with lock:
+            notice=supply_notice(ident,notice_id,x_session_token);key=(ident,notice_id)
+            if key in documents:return deepcopy(documents[key])
+            if documenter is fetch_document and os.environ.get('LH_ENABLE_DOCUMENT')!='1':return dict(empty_document('failed','DOCUMENT_NOT_ENABLED'),job_id=ident,notice_id=notice_id)
+            if not slots.acquire(blocking=False):raise HTTPException(503,'LOCAL_CAPACITY_REACHED')
+            documents[key]=dict(empty_document(),job_id=ident,notice_id=notice_id)
+            try:pool.submit(document_work,ident,deepcopy(notice))
+            except Exception:
+                documents.pop(key,None);slots.release();raise HTTPException(503,'WORKER_UNAVAILABLE') from None
+            return deepcopy(documents[key])
+    @app.get('/v1/search-jobs/{ident}/notices/{notice_id}/document')
+    def document_get(ident:str,notice_id:str,x_session_token:str=Header(default='')):
+        with lock:
+            supply_notice(ident,notice_id,x_session_token)
+            if (ident,notice_id) not in documents:raise HTTPException(404,'DOCUMENT_NOT_REQUESTED')
+            return deepcopy(documents[(ident,notice_id)])
     return app
 app=create_app()
 

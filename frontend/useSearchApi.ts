@@ -97,7 +97,25 @@ export function useSearchApi(){
    throw new Error('timeout');
   }finally{clearTimeout(timer);signal.removeEventListener('abort',cancel);}
  },[]);
- return {start,cancel,stop,status,busy,job,loadSupply};
+ const loadDocument=useCallback(async(noticeId:string,signal:AbortSignal):Promise<DocumentResult>=>{
+  const current=active.current,g=generation.current;if(!current)throw new Error('stale');
+  const path='/v1/search-jobs/'+encodeURIComponent(current.id)+'/notices/'+encodeURIComponent(noticeId)+'/document';
+  const abort=new AbortController(),cancel=()=>abort.abort();signal.addEventListener('abort',cancel);
+  if(signal.aborted)abort.abort();const timer=setTimeout(cancel,35000);
+  try{
+   let method='POST';
+   while(!abort.signal.aborted){
+    const r=await fetch(base+path,{method,signal:abort.signal,headers:{'X-Session-Token':session.current}});
+    if(!r.ok)throw new Error('request');const result=await r.json();
+    if(g!==generation.current||active.current?.id!==current.id)throw new Error('stale');
+    if(!validDocument(result,current.id,noticeId))throw new Error('shape');
+    if(result.status!=='researching')return result;
+    await new Promise<void>(resolve=>setTimeout(resolve,400));method='GET';
+   }
+   throw new Error('timeout');
+  }finally{clearTimeout(timer);signal.removeEventListener('abort',cancel);}
+ },[]);
+ return {start,cancel,stop,status,busy,job,loadSupply,loadDocument};
 }
 
 export type SupplyFact={state:string;value:string|number|boolean|null;unit:string|null;reason:string|null;evidence_ids:string[]};
@@ -113,4 +131,14 @@ function validSupply(x:any,jobId:string,noticeId:string):x is SupplyResult{
  const f=u[k];if(f===undefined)return !['deposit','monthly_rent'].includes(k);
  return f&&['known','unknown'].includes(f.state)&&(f.unit===null||typeof f.unit==='string')&&Array.isArray(f.evidence_ids)&&f.evidence_ids.every((id:any)=>typeof id==='string'&&evidence.has(id))&&(f.state==='known'?typeof f.value==='number'&&Number.isFinite(f.value)&&f.value>=0&&f.evidence_ids.length>0:f.value===null&&typeof f.reason==='string'&&f.reason.length>0);
  }));
+}
+
+export type DocumentResult={job_id:string;notice_id:string;status:'researching'|'partial'|'failed';error_code:string|null;checked_at:string|null;source_url:string|null;pdf_url:string|null;filename:string|null;sha256:string|null;current_id:string|null;original_id:string|null;reviewed:boolean;facts:{category:string;label:string;value:string;page:number}[];warnings:string[]};
+function validDocument(x:any,jobId:string,noticeId:string):x is DocumentResult{
+ if(!x||x.job_id!==jobId||x.notice_id!==noticeId||!['researching','partial','failed'].includes(x.status)||typeof x.reviewed!=='boolean'||!Array.isArray(x.facts)||x.facts.length>100||!Array.isArray(x.warnings)||!x.warnings.every((w:any)=>typeof w==='string'))return false;
+ if(!(x.error_code===null||typeof x.error_code==='string')||(x.status==='failed')!==(x.error_code!==null)||x.reviewed!==(x.facts.length>0))return false;
+ if(x.status!=='researching'&&(typeof x.checked_at!=='string'||!Number.isFinite(Date.parse(x.checked_at))))return false;
+ if(x.status!=='partial'&&(x.reviewed||x.facts.length))return false;
+ if(x.status==='partial'&&(!/^https:\/\/apply\.lh\.or\.kr\/lhapply\/lhFile\.do\?fileid=[0-9]{1,16}$/.test(x.pdf_url)||typeof x.filename!=='string'||!/^[a-f0-9]{64}$/.test(x.sha256)))return false;
+ return x.facts.every((f:any)=>f&&['address','schedule','rent','eligibility','correction'].includes(f.category)&&typeof f.label==='string'&&typeof f.value==='string'&&Number.isInteger(f.page)&&f.page>=1&&f.page<=200);
 }
