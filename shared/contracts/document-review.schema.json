@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:housing:document-review:0.1.0",
+  "title": "Reviewed official notice profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "official_id", "original_id", "source", "review", "facts", "warnings"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "official_id": {"type": "string", "pattern": "^[0-9]{1,32}$"},
+    "original_id": {"type": ["string", "null"], "pattern": "^[0-9]{1,32}$"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pdf_sha256", "page_count", "current_id", "original_id", "correction_text"],
+      "properties": {
+        "pdf_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "page_count": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "current_id": {"type": "string", "pattern": "^[0-9]{1,32}$"},
+        "original_id": {"type": ["string", "null"], "pattern": "^[0-9]{1,32}$"},
+        "correction_text": {"type": "string", "maxLength": 1000}
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewed_at", "method", "reviewed_scope", "unreviewed_scope"],
+      "properties": {
+        "reviewed_at": {"type": "string", "format": "date"},
+        "method": {"enum": ["pdf_text_and_visual_review"]},
+        "reviewed_scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1, "maxLength": 500}},
+        "unreviewed_scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1, "maxLength": 500}}
+      }
+    },
+    "facts": {
+      "type": "array", "minItems": 1, "maxItems": 100,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "category", "label", "value", "page", "source_locator"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"},
+          "category": {"enum": ["address", "schedule", "rent", "eligibility", "correction"]},
+          "label": {"type": "string", "minLength": 1, "maxLength": 200},
+          "value": {"type": "string", "minLength": 1, "maxLength": 1000},
+          "page": {"type": "integer", "minimum": 1, "maximum": 1000},
+          "source_locator": {"type": "string", "minLength": 4, "maxLength": 500}
+        }
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 1000}}
+  }
+}
