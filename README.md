@@ -2,6 +2,8 @@
 
 현재 단계: LH 임대주택 목록·공급정보 조회, 확인 필요/마감·취소 구분, 표본 공고문 17개 항목의 근거 표시 및 파일 변경 감지. 원문 검증 완료 공고와 로그인·저장 기능은 아직 미구현이다.
 
+- [작성된 소스 명세서](docs/SOURCE_SPECIFICATION.md) — 파일·함수·API·데이터·테스트 위치
+- [다음 개발 단계](docs/NEXT_DEVELOPMENT_PLAN.md) — 우선순위·선행 조건·완료 기준
 - [프로그램 명세서](docs/PROGRAM_SPECIFICATION.md) — 기능·화면·API·데이터·현재 구현 및 후속 개발 기준
 - [다른 PC 설치·실행·테스트 가이드](docs/guides/NEW_PC_SETUP.md) — 최초 clone, 환경 설치, 키 등록, pull 후 재검사
 - [직접 실행·테스트 안내](docs/guides/RUN_AND_TEST.md)

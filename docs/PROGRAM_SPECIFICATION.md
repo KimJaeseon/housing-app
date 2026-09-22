@@ -300,3 +300,6 @@
 상세 HTML 1MiB, PDF 10MiB, 요청별 10초, 앱 총 대기 35초 제한. 다운로드 파일은 서버 작업에서 메모리로 비교하며 사용자 제공 경로나 임의 URL을 받지 않는다. 장기 보관용 표본과 검토 기록은 저장소 내 개발 증거로 별도 관리한다.
 
 현재 확인 근거: [원문 연결 검증 기록](validation/2026-09-22_DOCUMENT_INTEGRATION.md), [실제 서버 응답](validation/2026-09-22_DOCUMENT_LIVE_RESPONSE.json). 기존 날짜의 검사 수치는 당시 결과로 보존한다.
+
+
+관련 상세 문서 (2026-09-22): [작성된 소스 명세서](SOURCE_SPECIFICATION.md), [다음 개발 단계 및 완료 기준](NEXT_DEVELOPMENT_PLAN.md). 현재 소스 설명과 후속 작업 제안을 구분한다.
