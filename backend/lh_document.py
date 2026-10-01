@@ -55,15 +55,17 @@ def read_page(body,notice):
         return next(iter(filled)) if filled else None
     if variable('panId')!=notice['official_id']:raise ValueError('DOCUMENT_IDENTITY_MISMATCH')
     current=variable('currPanId',True);original=variable('sOtxtPanId',True)
-    files=[];correction=None
+    files=[];correction=None;cancellation=None
     for dl in container.all('dl'):
         dt=dl.all('dt');dd=dl.all('dd')
         if len(dt)!=1 or not dd:continue
         if dt[0].text()=='정정사유':correction=' '.join(dd[0].text().split())[:1000]
+        if dt[0].text()=='취소사유':cancellation=' '.join(dd[0].text().split())[:1000]
         if dt[0].text()!='공고문':continue
         for a in dd[0].all('a'):
             m=re.fullmatch(r"javascript:fileDownLoad\('([0-9]{1,16})'\);?",a.attrs.get('href',''))
             if m and a.text().lower().endswith('.pdf'):files.append({'file_id':m[1],'name':a.text()[:200]})
+    if not files and cancellation:raise ValueError('DOCUMENT_CANCELLED_NO_PDF')
     if len(files)!=1:raise ValueError('DOCUMENT_PDF_NOT_UNIQUE')
     # An uncorrected notice leaves both relationship fields blank. Use the
     # already checked page ID only when no correction relationship is present.
@@ -123,6 +125,6 @@ def fetch_document(notice,opener=None,profile_dir=PROFILE_DIR):
     except HTTPError as e:
         code='DOCUMENT_ACCESS_DENIED' if e.code in (401,403) else 'DOCUMENT_HTTP_ERROR';e.close();return empty_document('failed',code)
     except ValueError as e:
-        allowed={'DOCUMENT_PAGE_UNCONFIRMED','DOCUMENT_IDENTITY_MISMATCH','DOCUMENT_PDF_NOT_UNIQUE','DOCUMENT_TOO_LARGE','DOCUMENT_NOT_PDF'}
+        allowed={'DOCUMENT_PAGE_UNCONFIRMED','DOCUMENT_IDENTITY_MISMATCH','DOCUMENT_PDF_NOT_UNIQUE','DOCUMENT_CANCELLED_NO_PDF','DOCUMENT_TOO_LARGE','DOCUMENT_NOT_PDF'}
         return empty_document('failed',str(e) if str(e) in allowed else 'DOCUMENT_RESPONSE_UNCONFIRMED')
     except Exception:return empty_document('failed','DOCUMENT_RESPONSE_UNCONFIRMED')

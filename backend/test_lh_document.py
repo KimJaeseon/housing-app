@@ -15,9 +15,18 @@ ORYU_HTML=Path('docs/references/lh-detail-2015122300019941.html').read_bytes()
 ORYU_PDF=Path('docs/references/lh-notice-2015122300019941.pdf').read_bytes()
 GANGSEO_HTML=Path('docs/references/lh-detail-2015122300020807.html').read_bytes()
 GANGSEO_PDF=Path('docs/references/lh-notice-2015122300020807.pdf').read_bytes()
+GANGSEO_ORIGINAL_HTML=Path('docs/references/lh-detail-2015122300020753.html').read_bytes()
+GANGSEO_ORIGINAL_PDF=Path('docs/references/lh-notice-2015122300020753.pdf').read_bytes()
+CANCEL_HTML=Path('docs/references/lh-detail-2015122300017563.html').read_bytes()
 GANGSEO_NOTICE={'id':'gangseo','official_id':'2015122300020807','title':'[정정공고][정정공고] 강서염창 통합공공임대주택 최초 입주자 모집공고',
  'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=2015122300020807&ccrCnntSysDsCd=03&uppAisTpCd=06&aisTpCd=48&mi=1026',
             'detail_type_code':'48','housing_type_code':'06','source_system_code':'03'}}
+GANGSEO_ORIGINAL_NOTICE={'id':'gangseo-original','official_id':'2015122300020753','title':'강서염창 통합공공임대주택 최초 입주자 모집공고',
+ 'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=2015122300020753&ccrCnntSysDsCd=03&uppAisTpCd=06&aisTpCd=48&mi=1026',
+            'detail_type_code':'48','housing_type_code':'06','source_system_code':'03'}}
+CANCEL_NOTICE={'id':'cancelled','official_id':'2015122300017563','title':'[취소공고]2025년 인천광역시 영구임대주택 예비입주자 모집(인천권역 3개소)',
+ 'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=2015122300017563&ccrCnntSysDsCd=03&uppAisTpCd=06&aisTpCd=09&mi=1026',
+            'detail_type_code':'09','housing_type_code':'06','source_system_code':'03'}}
 ORYU_NOTICE={'id':'oryu','official_id':'2015122300019941','title':'서울오류 행복주택 예비입주자 모집공고(2026.05.15)',
  'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?aisTpCd=10&ccrCnntSysDsCd=03&mi=1026&panId=2015122300019941&uppAisTpCd=06',
             'detail_type_code':'10','housing_type_code':'06','source_system_code':'03'}}
@@ -29,11 +38,22 @@ def opener(bodies):
 class DocumentTests(unittest.TestCase):
  def test_active_corrected_notice_review(self):
   r=fetch_document(GANGSEO_NOTICE,opener([GANGSEO_HTML,GANGSEO_PDF]))
-  self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-10-01');self.assertEqual(len(r['facts']),7)
+  self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-10-01');self.assertEqual(len(r['facts']),8)
   self.assertEqual(r['original_id'],'2015122300020753');self.assertEqual(r['current_id'],GANGSEO_NOTICE['official_id'])
   self.assertTrue(any('2026.10.01 17:00' in f['value'] for f in r['facts']))
   self.assertTrue(any('90,663,000' in f['value'] for f in r['facts']))
+  self.assertTrue(any('2027.02.15' in f['value'] for f in r['facts']))
   validate_document(dict(r,job_id='j',notice_id=GANGSEO_NOTICE['id']))
+ def test_original_pdf_never_inherits_correction_review(self):
+  r=fetch_document(GANGSEO_NOTICE,opener([GANGSEO_HTML,GANGSEO_ORIGINAL_PDF]))
+  self.assertEqual(r['status'],'partial');self.assertFalse(r['reviewed']);self.assertEqual(r['facts'],[])
+ def test_superseded_original_page_never_inherits_correction_review(self):
+  r=fetch_document(GANGSEO_ORIGINAL_NOTICE,opener([GANGSEO_ORIGINAL_HTML,GANGSEO_ORIGINAL_PDF]))
+  self.assertEqual(r['status'],'failed');self.assertFalse(r['reviewed']);self.assertEqual(r['facts'],[])
+ def test_cancelled_notice_without_pdf_has_distinct_reason(self):
+  r=fetch_document(CANCEL_NOTICE,opener([CANCEL_HTML]))
+  self.assertEqual(r['error_code'],'DOCUMENT_CANCELLED_NO_PDF');self.assertFalse(r['reviewed']);self.assertEqual(r['facts'],[])
+  validate_document(dict(r,job_id='j',notice_id=CANCEL_NOTICE['id']))
  def test_active_notice_changed_correction_withholds_facts(self):
   html=GANGSEO_HTML.replace('6P 일반공급 현장접수 설명 추가'.encode(), '6P 일반공급 현장접수 설명 변경'.encode())
   r=fetch_document(GANGSEO_NOTICE,opener([html,GANGSEO_PDF]))

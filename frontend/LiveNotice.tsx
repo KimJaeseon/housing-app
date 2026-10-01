@@ -74,7 +74,7 @@ function DocumentPanel({noticeId,loadDocument}:{noticeId:string;loadDocument:(id
   finally{if(!abort.signal.aborted){setBusy(false);active.current=null;}}
  }
  async function openPdf(){try{if(!result?.pdf_url||!/^https:\/\/apply\.lh\.or\.kr\/lhapply\/lhFile\.do\?fileid=[0-9]{1,16}$/.test(result.pdf_url))throw new Error();await Linking.openURL(result.pdf_url);}catch{setLinkError('첨부 PDF를 열지 못했습니다. LH 공식 원문에서 확인해 주세요.');}}
- const status=busy?'첨부 공고문 확인 중':error||(result?.status==='failed'?(result.error_code==='DOCUMENT_NOT_ENABLED'?'원문 확인 기능이 비활성화되어 있습니다. 실행 안내대로 서버를 재시작해 주세요.':'공식 공고문을 확인하지 못했습니다. 원문 링크에서 직접 확인해 주세요.'):result?.reviewed?'현재 PDF와 검토 기록이 일치합니다. 아래 항목만 확인했으며 전체 신청 자격 검증은 남아 있습니다.':result?.status==='partial'?'PDF는 확보했지만 항목 검토가 필요합니다. 이전 확인값은 표시하지 않습니다.':'');
+ const status=busy?'첨부 공고문 확인 중':error||(result?.status==='failed'?(result.error_code==='DOCUMENT_NOT_ENABLED'?'원문 확인 기능이 비활성화되어 있습니다. 실행 안내대로 서버를 재시작해 주세요.':result.error_code==='DOCUMENT_CANCELLED_NO_PDF'?'취소 공고 상세에 첨부 PDF가 없습니다. LH 공식 원문에서 취소 사유를 확인해 주세요.':'공식 공고문을 확인하지 못했습니다. 원문 링크에서 직접 확인해 주세요.'):result?.reviewed?'현재 PDF와 검토 기록이 일치합니다. 아래 항목만 확인했으며 전체 신청 자격 검증은 남아 있습니다.':result?.status==='partial'?'PDF는 확보했지만 항목 검토가 필요합니다. 이전 확인값은 표시하지 않습니다.':'');
  useEffect(()=>{if(status&&Platform.OS==='ios')AccessibilityInfo.announceForAccessibilityWithOptions(status,{queue:true});},[status]);
  return <View style={{gap:14}}><Text accessibilityRole="header" style={s.title}>첨부 공고문 항목 확인</Text>
  <Text style={s.body}>공식 PDF를 새로 받아 검토된 파일과 대조합니다. 현재 항목별 검토 기록은 서울번동3·서울오류·강서염창 세 공고에 한정됩니다. 접수 상태는 바뀔 수 있으므로 공식 원문을 다시 확인해 주세요. 다른 문서나 변경된 파일은 재검토가 필요합니다.</Text>

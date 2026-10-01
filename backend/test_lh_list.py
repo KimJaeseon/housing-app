@@ -30,6 +30,13 @@ class ListTests(unittest.TestCase):
     def test_closed_and_cancelled_excluded(self):
         result=self.run_list([row(1,2,'접수마감'),row(2,2,'취소')])
         self.assertEqual(result['notices'],[]);self.assertEqual(len(result['excluded_notices']),2)
+    def test_cancel_title_overrides_closed_source_status(self):
+        result=self.run_list([row(1,1,'접수마감','[취소공고]2025년 인천광역시 영구임대주택 예비입주자 모집')])
+        self.assertEqual(result['notices'],[])
+        notice=result['excluded_notices'][0]
+        self.assertEqual(notice['recruitment_status'],'cancelled')
+        self.assertEqual(notice['verification_status'],'needs_review')
+        self.assertTrue(any('취소 사유' in reason for reason in notice['review_reasons']))
     def test_correction_not_merged_by_title(self):
         result=self.run_list([row(1,2,title='합성 공고'),row(2,2,title='[정정공고]합성 공고')])
         self.assertEqual(len(result['notices']),2)

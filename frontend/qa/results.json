@@ -112,6 +112,10 @@
     "passed": true
   },
   {
+    "name": "document-cancelled-no-facts",
+    "passed": true
+  },
+  {
     "name": "document-loading",
     "violations": []
   },

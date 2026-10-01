@@ -68,6 +68,8 @@ def to_notice(row, region, checked):
              '최종 정정·취소 관계와 공공주택 세부 유형의 확인이 필요합니다.']
     if '정정' in title or '정정' in row['PAN_SS']:
         reasons.append('정정 공고 후보입니다. 원공고와 연결 및 변경 내용 대조가 필요합니다.')
+    if cancelled:
+        reasons.append('취소 공고입니다. 신청 대상에서 제외되며 LH 공식 상세의 취소 사유를 확인해 주세요.')
     return {'id':ident,'source_id':'LH','official_id':row['PAN_ID'],'title':title,
             'housing_type':row['AIS_TP_CD_NM'],'region_ids':[region], 'scope':'unknown',
             'versions':[{'id':version,'kind':'unclassified','related_version_ids':[],
