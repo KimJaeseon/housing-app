@@ -77,10 +77,11 @@ function DocumentPanel({noticeId,loadDocument}:{noticeId:string;loadDocument:(id
  const status=busy?'첨부 공고문 확인 중':error||(result?.status==='failed'?(result.error_code==='DOCUMENT_NOT_ENABLED'?'원문 확인 기능이 비활성화되어 있습니다. 실행 안내대로 서버를 재시작해 주세요.':'공식 공고문을 확인하지 못했습니다. 원문 링크에서 직접 확인해 주세요.'):result?.reviewed?'현재 PDF와 검토 기록이 일치합니다. 아래 항목만 확인했으며 전체 신청 자격 검증은 남아 있습니다.':result?.status==='partial'?'PDF는 확보했지만 항목 검토가 필요합니다. 이전 확인값은 표시하지 않습니다.':'');
  useEffect(()=>{if(status&&Platform.OS==='ios')AccessibilityInfo.announceForAccessibilityWithOptions(status,{queue:true});},[status]);
  return <View style={{gap:14}}><Text accessibilityRole="header" style={s.title}>첨부 공고문 항목 확인</Text>
- <Text style={s.body}>공식 PDF를 새로 받아 검토된 파일과 대조합니다. 현재 항목별 검토 대상은 서울번동3 정정공고 한 건입니다. 다른 문서나 변경된 파일은 재검토가 필요합니다.</Text>
+ <Text style={s.body}>공식 PDF를 새로 받아 검토된 파일과 대조합니다. 현재 항목별 검토 기록은 서울번동3 정정공고와 서울오류 행복주택 공고에 한정됩니다. 두 공고 모두 접수마감이며, 다른 문서나 변경된 파일은 재검토가 필요합니다.</Text>
  <Pressable accessibilityRole="button" accessibilityLabel="공고문 항목 확인" accessibilityState={{disabled:busy,busy}} disabled={busy} onPress={()=>void load()} style={({focused}:any)=>[s.button,focused&&{borderWidth:3,borderColor:'#142F2A'}]}><Text style={s.buttonText}>{busy?'첨부 공고문 확인 중':'공고문 항목 확인'}</Text></Pressable>
  <Text accessibilityLiveRegion="polite" style={s.body}>{status}</Text>
  {result?.checked_at&&<Text style={s.body}>원문 조회: {new Date(result.checked_at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} (한국 시간)</Text>}
+ {result?.reviewed_at&&<Text style={s.body}>항목 검토일: {result.reviewed_at}. 원문 조회 시점과 다릅니다.</Text>}
  {result?.facts.map((f,i)=><View key={i}><Text accessibilityRole="header" style={s.title}>{f.label}</Text><Text style={s.body}>{f.value}</Text><Text style={s.body}>근거: 첨부 공고문 {f.page}쪽</Text></View>)}
  {result?.warnings.map((w,i)=><Text key={i} style={s.body}>{w}</Text>)}
  {result?.pdf_url&&<LiveButton label="첨부 공고문 PDF 열기 · 외부 브라우저로 이동" onPress={()=>void openPdf()}/>}

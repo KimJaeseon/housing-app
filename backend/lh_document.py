@@ -13,6 +13,7 @@ from urllib.request import Request,build_opener
 from urllib.error import HTTPError
 from backend.lh_probe import NoRedirect
 from backend.lh_response import safe_official_url
+from backend.document_review import load_review
 
 PROFILE_DIR=Path(__file__).parent/'document_reviews'
 MAX_HTML=1024*1024
@@ -49,10 +50,11 @@ def read_page(body,notice):
     # Match literal public metadata only; never evaluate website JavaScript.
     def variable(name,allow_empty=False):
         vals=set(re.findall(r'\bvar\s+'+name+r"\s*=\s*'([0-9]*)'\s*;",text))
-        if len(vals)!=1 or (not allow_empty and not next(iter(vals))):raise ValueError('DOCUMENT_PAGE_UNCONFIRMED')
-        return next(iter(vals)) or None
+        filled={v for v in vals if v}
+        if len(filled)>1 or (not filled and not allow_empty) or not vals:raise ValueError('DOCUMENT_PAGE_UNCONFIRMED')
+        return next(iter(filled)) if filled else None
     if variable('panId')!=notice['official_id']:raise ValueError('DOCUMENT_IDENTITY_MISMATCH')
-    current=variable('currPanId');original=variable('sOtxtPanId',True)
+    current=variable('currPanId',True);original=variable('sOtxtPanId',True)
     files=[];correction=None
     for dl in container.all('dl'):
         dt=dl.all('dt');dd=dl.all('dd')
@@ -63,12 +65,17 @@ def read_page(body,notice):
             m=re.fullmatch(r"javascript:fileDownLoad\('([0-9]{1,16})'\);?",a.attrs.get('href',''))
             if m and a.text().lower().endswith('.pdf'):files.append({'file_id':m[1],'name':a.text()[:200]})
     if len(files)!=1:raise ValueError('DOCUMENT_PDF_NOT_UNIQUE')
+    # An uncorrected notice leaves both relationship fields blank. Use the
+    # already checked page ID only when no correction relationship is present.
+    if current is None:
+        if original is not None or correction is not None:raise ValueError('DOCUMENT_PAGE_UNCONFIRMED')
+        current=notice['official_id']
     return {'attachment':files[0],'current_id':current,'original_id':original,'correction':correction}
 
 def empty_document(status='researching',code=None):
     return {'status':status,'error_code':code,'checked_at':None if status=='researching' else datetime.now(timezone.utc).isoformat(),
             'source_url':None,'pdf_url':None,'sha256':None,'filename':None,'current_id':None,'original_id':None,
-            'reviewed':False,'facts':[],'warnings':[]}
+            'reviewed':False,'reviewed_at':None,'facts':[],'warnings':[]}
 
 def apply_review(result,notice,profile_dir=PROFILE_DIR):
     # Read only a fixed, numeric official-id filename under the review registry.
@@ -77,12 +84,18 @@ def apply_review(result,notice,profile_dir=PROFILE_DIR):
     path=profile_dir/(ident+'.json')
     if not path.is_file():
         result['warnings'].append('이 PDF의 항목별 검토 기록이 없습니다. 공식 문서를 직접 확인해 주세요.');return result
-    profile=json.loads(path.read_text(encoding='utf-8'))
-    matches=(profile['official_id']==ident and profile['sha256']==result['sha256'] and result['current_id']==ident
-             and result['original_id']==profile['original_id'] and compact(profile['correction'])==compact(result.pop('_correction','') or ''))
+    try:profile=load_review(path)
+    except (OSError,ValueError,json.JSONDecodeError,KeyError):
+        result['warnings'].append('공고문 검토 기록이 유효하지 않아 확인값을 보류했습니다.');return result
+    source=profile['source']
+    matches=(profile['official_id']==ident and source['pdf_sha256']==result['sha256'] and result['current_id']==ident
+             and result['original_id']==source['original_id'] and compact(source['correction_text'])==compact(result.pop('_correction','') or ''))
     if not matches:
         result['warnings'].append('문서 또는 정정 관계가 검토 기록과 달라 기존 확인값을 보류했습니다. 재검토가 필요합니다.');return result
-    result['reviewed']=True;result['facts']=deepcopy(profile['facts']);result['warnings'].extend(profile['warnings'])
+    result['reviewed']=True;result['reviewed_at']=profile['review']['reviewed_at']
+    result['facts']=[{k:f[k] for k in ('category','label','value','page')} for f in profile['facts']]
+    result['warnings'].extend(profile['warnings'])
+    result['warnings'].extend('미검토 범위: '+item for item in profile['review']['unreviewed_scope'])
     return result
 
 def fetch_document(notice,opener=None,profile_dir=PROFILE_DIR):

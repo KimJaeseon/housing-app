@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1.0",
+  "official_id": "2015122300019941",
+  "original_id": null,
+  "source": {
+    "pdf_sha256": "3880746674ddad89ec5f2a0683dd1db17c5e6570fae83233e25a4d8d19d3adaf",
+    "page_count": 29,
+    "current_id": "2015122300019941",
+    "original_id": null,
+    "correction_text": ""
+  },
+  "review": {
+    "reviewed_at": "2026-10-01",
+    "method": "pdf_text_and_visual_review",
+    "reviewed_scope": [
+      "공고문 1쪽 주소와 공고일",
+      "공고문 2쪽 16형 대학생·청년 계층 기본 임대조건과 청년 최대 증액 전환",
+      "공고문 15쪽 인터넷 접수·서류제출대상자 발표·서류 접수"
+    ],
+    "unreviewed_scope": [
+      "공고문 3~14쪽 및 16~29쪽의 세부 자격·소득·자산·우선배정 규칙",
+      "별도 정정·취소·일정 변경 공지와 현재 신청 가능 여부"
+    ]
+  },
+  "facts": [
+    {
+      "id": "oryu-address",
+      "category": "address",
+      "label": "공급 위치",
+      "value": "서울특별시 구로구 경인로20가길 68(오류동), 행복주택 890호",
+      "page": 1,
+      "source_locator": "p.1 1. 건설위치"
+    },
+    {
+      "id": "oryu-announcement-date",
+      "category": "schedule",
+      "label": "입주자 모집공고일",
+      "value": "2026.05.15. 신청 자격 등의 판단 기준일이며 현재 접수 가능 기간을 뜻하지 않음",
+      "page": 1,
+      "source_locator": "p.1 첫 번째 노란색 안내 상자"
+    },
+    {
+      "id": "oryu-internet-application",
+      "category": "schedule",
+      "label": "인터넷·모바일 청약 접수",
+      "value": "2026.05.27 10:00 ~ 2026.05.28 17:00 (한국 시간). 접수 기간 중 신청 가능하며 현재 기간은 지남",
+      "page": 15,
+      "source_locator": "p.15 기타사항 인터넷(PC)·모바일 청약 접수기간"
+    },
+    {
+      "id": "oryu-document-selection",
+      "category": "schedule",
+      "label": "서류제출대상자 발표",
+      "value": "2026.06.01 17:00 이후 (한국 시간)",
+      "page": 15,
+      "source_locator": "p.15 서류제출 대상자 발표 및 서류제출 방법"
+    },
+    {
+      "id": "oryu-document-submission",
+      "category": "schedule",
+      "label": "서류제출대상자 서류 접수",
+      "value": "2026.06.04 ~ 2026.06.10. 등기우편으로 접수하며 2026.06.10 소인이 찍힌 우편까지 유효",
+      "page": 15,
+      "source_locator": "p.15 서류제출 방법과 서류제출 기한"
+    },
+    {
+      "id": "oryu-16-student-basic-rent",
+      "category": "rent",
+      "label": "16형 · 대학생 계층 기본 임대조건",
+      "value": "보증금 47,600,000원 · 월 임대료 202,300원. 원문 보증금 단위 천원을 원으로 환산",
+      "page": 2,
+      "source_locator": "p.2 2. 임대대상 및 임대조건 표 16형 대학생 계층"
+    },
+    {
+      "id": "oryu-16-employed-youth-basic-rent",
+      "category": "rent",
+      "label": "16형 · 청년 계층 기본 임대조건",
+      "value": "보증금 50,400,000원 · 월 임대료 214,200원. 원문 보증금 단위 천원을 원으로 환산. 소득이 없는 청년의 조건과 구분",
+      "page": 2,
+      "source_locator": "p.2 2. 임대대상 및 임대조건 표 16형 청년 계층"
+    },
+    {
+      "id": "oryu-16-youth-converted-rent",
+      "category": "rent",
+      "label": "16형 · 청년 계층 최대 증액 전환",
+      "value": "선택형 최대 증액 전환 시 보증금 75,400,000원 · 월 임대료 89,200원. 기본 조건과 구분",
+      "page": 2,
+      "source_locator": "p.2 2. 임대대상 및 임대조건 표 16형 청년 계층 최대전환시 임대조건"
+    }
+  ],
+  "warnings": [
+    "LH 공식 상세는 이 공고를 접수마감으로 표시합니다. 신청 가능 공고로 취급하지 마세요.",
+    "공고문 2쪽은 소득이 없는 청년에게 대학생 계층 임대조건을 적용한다고 안내합니다. 대상별 조건을 합치지 마세요."
+  ]
+}

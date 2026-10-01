@@ -133,10 +133,11 @@ function validSupply(x:any,jobId:string,noticeId:string):x is SupplyResult{
  }));
 }
 
-export type DocumentResult={job_id:string;notice_id:string;status:'researching'|'partial'|'failed';error_code:string|null;checked_at:string|null;source_url:string|null;pdf_url:string|null;filename:string|null;sha256:string|null;current_id:string|null;original_id:string|null;reviewed:boolean;facts:{category:string;label:string;value:string;page:number}[];warnings:string[]};
+export type DocumentResult={job_id:string;notice_id:string;status:'researching'|'partial'|'failed';error_code:string|null;checked_at:string|null;source_url:string|null;pdf_url:string|null;filename:string|null;sha256:string|null;current_id:string|null;original_id:string|null;reviewed:boolean;reviewed_at:string|null;facts:{category:string;label:string;value:string;page:number}[];warnings:string[]};
 function validDocument(x:any,jobId:string,noticeId:string):x is DocumentResult{
  if(!x||x.job_id!==jobId||x.notice_id!==noticeId||!['researching','partial','failed'].includes(x.status)||typeof x.reviewed!=='boolean'||!Array.isArray(x.facts)||x.facts.length>100||!Array.isArray(x.warnings)||!x.warnings.every((w:any)=>typeof w==='string'))return false;
  if(!(x.error_code===null||typeof x.error_code==='string')||(x.status==='failed')!==(x.error_code!==null)||x.reviewed!==(x.facts.length>0))return false;
+ if(x.reviewed?(typeof x.reviewed_at!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(x.reviewed_at)):x.reviewed_at!==null)return false;
  if(x.status!=='researching'&&(typeof x.checked_at!=='string'||!Number.isFinite(Date.parse(x.checked_at))))return false;
  if(x.status!=='partial'&&(x.reviewed||x.facts.length))return false;
  if(x.status==='partial'&&(!/^https:\/\/apply\.lh\.or\.kr\/lhapply\/lhFile\.do\?fileid=[0-9]{1,16}$/.test(x.pdf_url)||typeof x.filename!=='string'||!/^[a-f0-9]{64}$/.test(x.sha256)))return false;

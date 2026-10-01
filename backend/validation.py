@@ -74,6 +74,7 @@ def validate_document(data):
     if data['status']!='researching' and not data['checked_at']:raise ValueError('missing document check time')
     if data['status']!='partial' and (data['reviewed'] or data['facts']):raise ValueError('unexpected document facts')
     if bool(data['facts'])!=data['reviewed']:raise ValueError('unreviewed document facts')
+    if data['reviewed'] != (data['reviewed_at'] is not None):raise ValueError('document review date mismatch')
     if data['status']=='partial':
         if not all(data[k] for k in ('source_url','pdf_url','sha256','filename','current_id')):raise ValueError('missing document provenance')
         from urllib.parse import urlsplit,parse_qs

@@ -1,7 +1,7 @@
 # 작성된 소스 명세서
 
-- 문서 ID: SRC-HOUSING-001 / 버전 1.0 / 작성일 2026-09-22
-- 기준 코드: `e45ec7965ad8f14c7690f718a0be282ce4e18e14` (GitHub main에 업로드한 원문 확인 기능)
+- 문서 ID: SRC-HOUSING-001 / 버전 1.2 / 갱신일 2026-10-01
+- 기준: 2026-10-01 검토 기록 변경과 재검사 결과. 이전 원문 확인 기능의 기준 커밋은 `e45ec7965ad8f14c7690f718a0be282ce4e18e14`이다.
 - 목적: 유지보수자가 현재 구현의 파일·함수·입출력·상태·검증 위치를 찾을 수 있도록 정리한다.
 - 요구사항 기준: [프로그램 명세서](PROGRAM_SPECIFICATION.md). 후속 구현은 [다음 개발 계획](NEXT_DEVELOPMENT_PLAN.md)을 따른다.
 
@@ -72,6 +72,7 @@ flowchart TD
 | [lh_response.py](../backend/lh_response.py) | normalize_row, safe_official_url | 공개 응답 필드, 공고 식별자와 공식 URL 일치, 키 반사 차단 |
 | [lh_supply.py](../backend/lh_supply.py) | parameters, numeric_fact, parse_supply, fetch_supply | 지원 레이아웃 요청, 숫자·단위 검증, 주택형·근거 생성 |
 | [lh_document.py](../backend/lh_document.py) | Node, Tree, read_page, apply_review, fetch_document | 상세 HTML 식별, 공고문 PDF 선택, 해시·정정 관계와 검토 기록 대조 |
+| [document_review.py](../backend/document_review.py) | load_review, validate_pdf, main | 검토 기록 Schema·식별자·쪽 범위·중복 근거 검사, 로컬 PDF 해시 확인 CLI. 외부 요청 없음 |
 | [lh_probe.py](../backend/lh_probe.py) | 요청 구성·키 정규화·NoRedirect·접속 점검 | API 요청 규격, bounded read 공통값, 리다이렉트 거부 |
 | [lh_errors.py](../backend/lh_errors.py) | mapped_error, payload_error, decode_response | 알려진 JSON/XML 오류 코드만 반환, 원격 오류 본문·인증정보 비전파 |
 | [lh_adapter.py](../backend/lh_adapter.py) | collect | 기존 접속 점검 경로. 실제 목록 모드와 구분 |
@@ -103,13 +104,17 @@ to_notice는 목록 상태의 마감·취소를 제외 목록으로 분리한다
 
 ### 원문 항목 확인
 
-1. 목록에서 확인한 현대식 LH 상세 URL과 공고 ID·제목을 검증한다. 현재 원문 수집기는 legacy URL을 지원하지 않는다.
+1. 목록에서 확인한 현대식 LH 상세 URL과 공고 ID·제목을 검증한다. 비정정 공고는 `currPanId`와 `sOtxtPanId`가 모두 비어 있을 수 있어, 정정 사유도 없고 페이지 공고 ID가 일치할 때에만 현재 ID를 해당 공고 번호로 채운다. 현재 원문 수집기는 legacy URL을 지원하지 않는다.
 2. HTML의 공고문 그룹에서 PDF 한 개를 찾는다. 공개 JavaScript 리터럴에서 panId/currPanId/sOtxtPanId를 읽되 코드는 실행하지 않는다.
 3. HTML 1MiB, PDF 10MiB 제한으로 가져오고 PDF 서명을 확인한다. 리다이렉트를 따라가지 않는다.
-4. [검토 기록](../backend/document_reviews/2015122300020605.json)의 공고 ID·SHA-256·원공고 ID·현재 ID·정정 사유와 비교한다.
-5. 모두 일치할 때 facts와 warnings를 복사한다. 다른 파일·미등록 문서는 facts 없이 재검토 안내를 반환한다.
+4. [검토 기록](../backend/document_reviews/2015122300020605.json)을 [전용 Schema](../shared/contracts/document-review.schema.json)와 `load_review`로 검사한다. 공고 ID·SHA-256·원공고 ID·현재 ID·정정 사유를 실제 자료와 비교한다. 기록의 중복 ID, 쪽 범위 초과, 근거 위치 불일치도 거부한다.
+5. 모두 일치할 때만 해당 기록의 사실과 `reviewed_at`을 응답에 복사하고 미검토 범위를 안내한다. 다른 파일·미등록·형식 오류 기록은 facts 없이 재검토 안내를 반환한다.
 
-현재 한 PDF의 17항목만 검토되어 있다. 서버는 PDF 텍스트를 매번 자동 추출하거나 자격을 추론하지 않는다. 텍스트 추출·표 렌더링 검토는 개발 과정에서 별도로 수행했다. reviewed=true는 해당 항목들의 검토 기록 일치이며 공고 전체 verified와 다르다.
+현재 서울번동3 정정공고 PDF의 17항목과 서울오류 비정정공고 PDF의 8항목을 검토했다. 두 공고 모두 접수마감이다. 서버는 PDF 텍스트를 매번 자동 추출하거나 자격을 추론하지 않는다. 텍스트 추출·표 렌더링 검토는 개발 과정에서 별도로 수행했다. reviewed=true는 해당 항목들의 검토 기록 일치이며 공고 전체 verified와 다르다.
+
+검토 기록 작성자는 `python -m backend.document_review --review backend/document_reviews/2015122300020605.json --pdf docs/references/lh-notice-2015122300020605.pdf`로 로컬 PDF 해시를 확인한다. 정상 출력에는 공고 ID, 항목 수, 검토일만 포함된다. 종료 코드 2는 기록 또는 PDF가 일치하지 않음을 뜻한다. 기록의 `source_locator`는 사람이 PDF를 다시 볼 위치이고, 이 도구가 텍스트·표의 의미나 금액 환산을 자동 증명하지는 않는다. 새 공고를 등록하려면 원문 추출 후보와 사람이 대조한 값을 분리하고, 파일 역할·쪽·단위·대상별 조건을 확인한 뒤 기록을 작성해야 한다.
+
+두 번째 표본의 기록은 [2015122300019941.json](../backend/document_reviews/2015122300019941.json), 원본은 [PDF](references/lh-notice-2015122300019941.pdf), 공개 상세는 [LH 원문](https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?aisTpCd=10&ccrCnntSysDsCd=03&mi=1026&panId=2015122300019941&uppAisTpCd=06)이다. 실제 사이트 재조회와 검토 쪽은 [검증 기록](validation/2026-10-01_SECOND_NOTICE.md)을 따른다.
 
 ## 4. 내부 API 명세
 
@@ -145,7 +150,7 @@ to_notice는 목록 상태의 마감·취소를 제외 목록으로 분리한다
 | notice | official_id, listing, recruitment_status, verification_status, checked_in_job_id | 다른 검색의 공고 혼입 금지. 모집·검증 상태 분리 |
 | fact | state, value, unit, reason, evidence_ids | unknown은 null+사유. known은 값+근거 |
 | supply_result | job_id, notice_id, status, units, evidence, versions | available/empty/failed 구분. unknown 가격을 0으로 변환 금지 |
-| document_result | job_id, notice_id, status, reviewed, facts, warnings, pdf_url, sha256, current_id, original_id | partial에서만 확인 항목 반환. 파일·공고 provenance 필요 |
+| document_result | job_id, notice_id, status, checked_at, reviewed, reviewed_at, facts, warnings, pdf_url, sha256, current_id, original_id | partial에서만 확인 항목 반환. `checked_at`은 이번 원문 조회 시각, `reviewed_at`은 항목을 사람이 검토한 날짜. 검토되지 않았으면 null |
 | document fact | category, label, value, page | 읽기용 설명. 금액·시간의 정규화된 기계 판정 필드가 아님 |
 | evidence/version | URL, 위치, 확인 시점, 버전 ID·관계 | 키 없는 출처 URL. 미확인 버전 관계는 unclassified |
 
@@ -178,13 +183,13 @@ to_notice는 목록 상태의 마감·취소를 제외 목록으로 분리한다
 | 앱 상태·UI | tsc, Expo export, frontend/qa.mjs | 오래된 응답·초점·조건별 금액·좁은 화면·오류 |
 | 실제 웹 연결 | frontend/qa-live-list.mjs | 실제 목록·원문 연계. 외부 요청 발생 |
 
-최근 실행 기록은 서버 131개·참조 규칙 26개 통과, 웹 자동 접근성 41개 상태 위반 0건, 동작 확인 22개 통과다. [원문 검증 기록](validation/2026-09-22_DOCUMENT_INTEGRATION.md)을 근거로 하며 이번 문서 작성 중 재실행한 수치는 아니다. 모바일 실기 검사는 미실행이다.
+2026-10-01 두 번째 표본 추가 후 재검사 결과는 서버 140개, 참조 규칙 26개, TypeScript, Expo 웹 빌드 통과다. 오프라인 웹 QA는 36개 화면 상태 자동 접근성 위반 0건, 동작 19개 통과다. 실제 LH 목록·상세·PDF 재조회는 서울오류 표본에서 성공했고, VoiceOver·TalkBack 실기 검사는 미실행이다. [두 번째 표본 검증 기록](validation/2026-10-01_SECOND_NOTICE.md)에 범위를 남겼다.
 
 ## 8. 알려진 유지보수 제약
 
 - 현재 HTML 구조와 JavaScript 변수명에 의존한다. 사이트가 바뀌면 기존 값을 유지하지 않고 실패 또는 검토 필요로 처리한다.
 - 단일 PDF만 선택한다. HWPX 전용·복수 공고문·스캔 문서의 자동 처리는 없다.
-- 검토 기록은 항목 설명 문자열이다. 대상별 금액·전환 조건·접수 회차·자격 조건의 정규화 모델 확장이 필요하다.
+- 검토 기록은 항목 설명 문자열이다. `source_locator`는 사람이 근거 쪽을 찾는 위치이며 CLI가 원문 문장·표 수치·환산 정확성을 자동 판정하지 않는다. 대상별 금액·전환 조건·접수 회차·자격 조건의 정규화 모델 확장이 필요하다.
 - API 공급 사실과 원문 사실을 병합해 확인 완료로 승격하는 경로는 없다.
 - 세션·작업·키 저장은 로컬 개발 중심이다. 데이터 만료, 저장소, 계정 권한, 운영 배포를 별도로 설계해야 한다.
 - 모든 화면 변경은 접근성 정책과 기존 QA를 따른다. 사용자 모바일 실기 확인을 웹 자동검사로 대체하지 않는다.

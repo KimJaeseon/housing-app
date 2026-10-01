@@ -776,6 +776,7 @@
         "current_id",
         "original_id",
         "reviewed",
+        "reviewed_at",
         "facts",
         "warnings"
       ],
@@ -847,6 +848,13 @@
         },
         "reviewed": {
           "type": "boolean"
+        },
+        "reviewed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
         },
         "facts": {
           "type": "array",

@@ -72,6 +72,10 @@
     "passed": true
   },
   {
+    "name": "document-review-date",
+    "passed": true
+  },
+  {
     "name": "document-reviewed",
     "violations": []
   },

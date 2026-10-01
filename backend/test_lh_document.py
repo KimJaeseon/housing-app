@@ -11,14 +11,33 @@ NOTICE=JOB['excluded_notices'][0]
 NOTICE['listing'].update(detail_type_code='10',housing_type_code='06',source_system_code='03',supply_info_type='063')
 HTML=Path('docs/references/lh-detail-2015122300020605.html').read_bytes()
 PDF=Path('docs/references/lh-notice-2015122300020605.pdf').read_bytes()
+ORYU_HTML=Path('docs/references/lh-detail-2015122300019941.html').read_bytes()
+ORYU_PDF=Path('docs/references/lh-notice-2015122300019941.pdf').read_bytes()
+ORYU_NOTICE={'id':'oryu','official_id':'2015122300019941','title':'서울오류 행복주택 예비입주자 모집공고(2026.05.15)',
+ 'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?aisTpCd=10&ccrCnntSysDsCd=03&mi=1026&panId=2015122300019941&uppAisTpCd=06',
+            'detail_type_code':'10','housing_type_code':'06','source_system_code':'03'}}
 def opener(bodies):
  op=Mock();responses=[]
  for body in bodies:
   response=Mock();response.read.return_value=body;response.__enter__=Mock(return_value=response);response.__exit__=Mock(return_value=False);responses.append(response)
  op.open.side_effect=responses;return op
 class DocumentTests(unittest.TestCase):
+ def test_uncorrected_notice_review(self):
+  r=fetch_document(ORYU_NOTICE,opener([ORYU_HTML,ORYU_PDF]))
+  self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-10-01');self.assertEqual(len(r['facts']),8)
+  self.assertEqual(r['current_id'],ORYU_NOTICE['official_id']);self.assertIsNone(r['original_id'])
+  validate_document(dict(r,job_id='j',notice_id=ORYU_NOTICE['id']))
+ def test_uncorrected_notice_relationship_conflict(self):
+  html=ORYU_HTML.replace(b"var sOtxtPanId = '';",b"var sOtxtPanId = '123';")
+  self.assertEqual(fetch_document(ORYU_NOTICE,opener([html]))['error_code'],'DOCUMENT_PAGE_UNCONFIRMED')
+ def test_conflicting_page_ids_rejected(self):
+  html=ORYU_HTML+b"<script>var panId = '123';</script>"
+  self.assertEqual(fetch_document(ORYU_NOTICE,opener([html]))['error_code'],'DOCUMENT_PAGE_UNCONFIRMED')
+ def test_uncorrected_notice_pdf_change(self):
+  r=fetch_document(ORYU_NOTICE,opener([ORYU_HTML,ORYU_PDF+b'changed']))
+  self.assertFalse(r['reviewed']);self.assertEqual(r['facts'],[])
  def test_exact_pdf_review_and_provenance(self):
-  r=fetch_document(NOTICE,opener([HTML,PDF]));self.assertTrue(r['reviewed']);self.assertEqual(len(r['facts']),17);validate_document(dict(r,job_id='j',notice_id=NOTICE['id']))
+  r=fetch_document(NOTICE,opener([HTML,PDF]));self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-09-17');self.assertEqual(len(r['facts']),17);validate_document(dict(r,job_id='j',notice_id=NOTICE['id']))
   self.assertTrue(any('50,400,000' in f['value'] for f in r['facts']));self.assertTrue(any('75,400,000' in f['value'] for f in r['facts']))
   self.assertEqual(r['original_id'],'2015122300020577');self.assertNotIn('_correction',r)
  def test_changed_pdf_withholds_review(self):
@@ -32,6 +51,12 @@ class DocumentTests(unittest.TestCase):
   from tempfile import TemporaryDirectory
   with TemporaryDirectory() as d:r=fetch_document(NOTICE,opener([HTML,PDF]),Path(d))
   self.assertEqual(r['status'],'partial');self.assertEqual(r['facts'],[])
+ def test_invalid_review_withholds_facts(self):
+  from tempfile import TemporaryDirectory
+  with TemporaryDirectory() as d:
+   p=Path(d)/('2015122300020605.json');p.write_text('{"official_id":"2015122300020605"}',encoding='utf-8')
+   r=fetch_document(NOTICE,opener([HTML,PDF]),Path(d))
+  self.assertFalse(r['reviewed']);self.assertIsNone(r['reviewed_at']);self.assertEqual(r['facts'],[])
  def test_wrong_title_rejected(self):
   n=copy.deepcopy(NOTICE);n['title']='other';self.assertEqual(fetch_document(n,opener([HTML]))['error_code'],'DOCUMENT_IDENTITY_MISMATCH')
  def test_foreign_url_never_requested(self):
@@ -45,6 +70,9 @@ class DocumentTests(unittest.TestCase):
   self.assertEqual(fetch_document(NOTICE,opener([html]))['error_code'],'DOCUMENT_PDF_NOT_UNIQUE')
  def test_unreviewed_facts_rejected(self):
   r=dict(fetch_document(NOTICE,opener([HTML,PDF])),job_id='j',notice_id='n');r['reviewed']=False
+  with self.assertRaises(ValueError):validate_document(r)
+ def test_missing_review_date_rejected(self):
+  r=dict(fetch_document(NOTICE,opener([HTML,PDF])),job_id='j',notice_id='n');r['reviewed_at']=None
   with self.assertRaises(ValueError):validate_document(r)
  def test_external_pdf_rejected(self):
   r=dict(fetch_document(NOTICE,opener([HTML,PDF])),job_id='j',notice_id='n');r['pdf_url']='https://elsewhere.test/file.pdf'

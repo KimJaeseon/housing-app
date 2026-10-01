@@ -60,8 +60,8 @@ let documentMode='reviewed';
 await page.route('**/v1/search-jobs/*/notices/*/document',async route=>{
  const r=structuredClone(documentFixture);
  if(documentMode==='delay')await new Promise(resolve=>setTimeout(resolve,1200));
- if(documentMode==='changed'){r.reviewed=false;r.facts=[];r.warnings=['문서 또는 정정 관계가 검토 기록과 달라 기존 확인값을 보류했습니다. 재검토가 필요합니다.'];}
- if(documentMode==='failed'){r.status='failed';r.error_code='DOCUMENT_ACCESS_DENIED';r.reviewed=false;r.facts=[];r.pdf_url=null;}
+ if(documentMode==='changed'){r.reviewed=false;r.reviewed_at=null;r.facts=[];r.warnings=['문서 또는 정정 관계가 검토 기록과 달라 기존 확인값을 보류했습니다. 재검토가 필요합니다.'];}
+ if(documentMode==='failed'){r.status='failed';r.error_code='DOCUMENT_ACCESS_DENIED';r.reviewed=false;r.reviewed_at=null;r.facts=[];r.pdf_url=null;}
  if(documentMode==='malformed')r.notice_id='wrong';
  return route.fulfill({json:r});
 });
@@ -72,6 +72,7 @@ for(const mode of ['reviewed','changed','failed','malformed','delay']){
   await page.getByText('21A · 청년(소득 있음) 기본 임대조건',{exact:true}).waitFor();
   const amount=page.getByText('보증금 50,400,000원 · 월 임대료 214,200원. 보증금 원문 단위 천원을 원으로 환산',{exact:true});
   checks.push({name:'document-conditional-rent',passed:await amount.count()===1});
+  checks.push({name:'document-review-date',passed:await page.getByText('항목 검토일: 2026-09-17. 원문 조회 시점과 다릅니다.',{exact:true}).count()===1});
   await amount.scrollIntoViewIfNeeded();await scan('document-reviewed');
   await page.setViewportSize({width:320,height:640});await scan('document-narrow');
   checks.push({name:'document-no-overflow',passed:await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)});
