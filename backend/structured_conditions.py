@@ -51,22 +51,22 @@ def load_conditions(path, review_path):
             raise ValueError('window method absent from evidence')
     rents_by_id = {}
     combinations = set()
-    basic_fields = {'id', 'unit', 'income_band', 'condition', 'deposit_unit', 'deposit_raw', 'deposit_won', 'monthly_rent_won', 'fact_id'}
+    basic_fields = {'id', 'unit', 'applicant_group', 'condition', 'deposit_unit', 'deposit_raw', 'deposit_won', 'monthly_rent_won', 'fact_id'}
     for rent in record['rents']:
         condition = rent.get('condition')
-        required = basic_fields if condition == 'basic' else basic_fields | {'base_rent_id', 'conversion_delta_won'}
+        required = basic_fields if condition == 'basic' else basic_fields | {'base_rent_id', 'conversion_delta_raw', 'conversion_delta_won'}
         if set(rent) != required:
             raise ValueError('rent fields invalid')
-        if rent['id'] in seen or condition not in ('basic', 'max_increase', 'max_decrease') or rent['deposit_unit'] != '원':
+        if rent['id'] in seen or condition not in ('basic', 'max_increase', 'max_decrease') or rent['deposit_unit'] not in ('원', '천원'):
             raise ValueError('rent identity invalid')
         seen.add(rent['id'])
-        combination = (rent['unit'], rent['income_band'], condition)
+        combination = (rent['unit'], rent['applicant_group'], condition)
         if combination in combinations:
             raise ValueError('duplicate rent condition')
         combinations.add(combination)
         rents_by_id[rent['id']] = rent
         fact = facts.get(rent['fact_id'])
-        if not fact or fact['category'] != 'rent' or rent['unit'] not in fact['label'] or rent['income_band'] not in fact['label']:
+        if not fact or fact['category'] not in ('rent', 'correction') or rent['unit'] not in fact['label'] or rent['applicant_group'] not in fact['label']:
             raise ValueError('rent evidence mismatch')
         label_fragment = {'basic': '기본', 'max_increase': '최대 증액', 'max_decrease': '최대 감액'}[condition]
         if label_fragment not in fact['label']:
@@ -74,13 +74,16 @@ def load_conditions(path, review_path):
         for key in ('deposit_raw', 'deposit_won', 'monthly_rent_won'):
             if type(rent[key]) is not int or rent[key] < 0:
                 raise ValueError('rent amount invalid')
-        if rent['deposit_raw'] != rent['deposit_won']:
+        factor = 1000 if rent['deposit_unit'] == '천원' else 1
+        if rent['deposit_raw'] * factor != rent['deposit_won']:
             raise ValueError('rent conversion mismatch')
+        if factor == 1000 and '천원' not in fact['value']:
+            raise ValueError('rent source unit absent from evidence')
         if f"{rent['deposit_won']:,}원" not in fact['value'] or f"{rent['monthly_rent_won']:,}원" not in fact['value']:
             raise ValueError('rent amount absent from evidence')
         if condition != 'basic':
             delta = rent['conversion_delta_won']
-            if type(delta) is not int or (condition == 'max_increase' and delta <= 0) or (condition == 'max_decrease' and delta >= 0):
+            if type(delta) is not int or type(rent['conversion_delta_raw']) is not int or rent['conversion_delta_raw'] * factor != delta or (condition == 'max_increase' and delta <= 0) or (condition == 'max_decrease' and delta >= 0):
                 raise ValueError('rent conversion direction invalid')
             verb = '증액' if delta > 0 else '감액'
             if f'{abs(delta):,}원 {verb}' not in fact['value']:
@@ -89,7 +92,7 @@ def load_conditions(path, review_path):
         if rent['condition'] == 'basic':
             continue
         base = rents_by_id.get(rent['base_rent_id'])
-        if not base or base['condition'] != 'basic' or (base['unit'], base['income_band']) != (rent['unit'], rent['income_band']):
+        if not base or base['condition'] != 'basic' or (base['unit'], base['applicant_group']) != (rent['unit'], rent['applicant_group']):
             raise ValueError('rent base mismatch')
         if base['deposit_won'] + rent['conversion_delta_won'] != rent['deposit_won']:
             raise ValueError('rent conversion amount mismatch')

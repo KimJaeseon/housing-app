@@ -1,0 +1,90 @@
+{
+  "official_id": "2015122300020605",
+  "pdf_sha256": "5deb8acbdb2112f274f67c3c03e01f754fa4fc986d45c30868e16bc001532f6f",
+  "windows": [],
+  "rents": [
+    {
+      "id": "bundong-16a-student-basic",
+      "unit": "16A",
+      "applicant_group": "대학생",
+      "condition": "basic",
+      "deposit_unit": "천원",
+      "deposit_raw": 36720,
+      "deposit_won": 36720000,
+      "monthly_rent_won": 156060,
+      "fact_id": "bundong3-07"
+    },
+    {
+      "id": "bundong-21a-student-basic",
+      "unit": "21A",
+      "applicant_group": "대학생",
+      "condition": "basic",
+      "deposit_unit": "천원",
+      "deposit_raw": 47600,
+      "deposit_won": 47600000,
+      "monthly_rent_won": 202300,
+      "fact_id": "bundong3-08"
+    },
+    {
+      "id": "bundong-21a-youth-no-income-basic",
+      "unit": "21A",
+      "applicant_group": "청년(소득 없음)",
+      "condition": "basic",
+      "deposit_unit": "천원",
+      "deposit_raw": 47600,
+      "deposit_won": 47600000,
+      "monthly_rent_won": 202300,
+      "fact_id": "bundong3-09"
+    },
+    {
+      "id": "bundong-21a-youth-income-basic",
+      "unit": "21A",
+      "applicant_group": "청년(소득 있음)",
+      "condition": "basic",
+      "deposit_unit": "천원",
+      "deposit_raw": 50400,
+      "deposit_won": 50400000,
+      "monthly_rent_won": 214200,
+      "fact_id": "bundong3-10"
+    },
+    {
+      "id": "bundong-44a-family-basic",
+      "unit": "44A",
+      "applicant_group": "신혼부부·한부모가족",
+      "condition": "basic",
+      "deposit_unit": "천원",
+      "deposit_raw": 113600,
+      "deposit_won": 113600000,
+      "monthly_rent_won": 482800,
+      "fact_id": "bundong3-11"
+    },
+    {
+      "id": "bundong-21a-youth-income-max-increase",
+      "unit": "21A",
+      "applicant_group": "청년(소득 있음)",
+      "condition": "max_increase",
+      "deposit_unit": "천원",
+      "deposit_raw": 75400,
+      "deposit_won": 75400000,
+      "monthly_rent_won": 89200,
+      "base_rent_id": "bundong-21a-youth-income-basic",
+      "conversion_delta_raw": 25000,
+      "conversion_delta_won": 25000000,
+      "fact_id": "bundong3-12"
+    },
+    {
+      "id": "bundong-21a-youth-income-max-decrease",
+      "unit": "21A",
+      "applicant_group": "청년(소득 있음)",
+      "condition": "max_decrease",
+      "deposit_unit": "천원",
+      "deposit_raw": 8400,
+      "deposit_won": 8400000,
+      "monthly_rent_won": 336700,
+      "base_rent_id": "bundong-21a-youth-income-basic",
+      "conversion_delta_raw": -42000,
+      "conversion_delta_won": -42000000,
+      "fact_id": "bundong3-13"
+    }
+  ]
+}

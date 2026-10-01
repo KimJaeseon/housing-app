@@ -11,6 +11,8 @@
 
 현재 등록된 서울번동3 정정공고는 29쪽 PDF의 1·2·3·12쪽에서 선정한 17개 항목만 포함한다. 전체 자격과 별도 변경 공지는 미검토다. 검토일은 2026-09-17이며, 앱의 원문 조회 시각은 매 요청마다 별도로 기록된다.
 
+서울번동3의 선정된 임대조건 7개는 [구조화 기록](../../backend/structured_conditions/2015122300020605.json)에도 연결했다. PDF 2쪽의 보증금·전환액 단위는 천원, 월 임대료는 원이므로 두 단위를 혼동하지 않는다. 대학생, 청년(소득 없음), 청년(소득 있음), 신혼부부·한부모가족을 합치지 않는다. [검증 기록](../validation/2026-10-01_BUNDONG_UNIT_CONVERSION.md)을 참조한다.
+
 두 번째 서울오류 행복주택 공고는 29쪽 PDF의 1·2·15쪽에서 선정한 8개 항목을 포함한다. 검토일은 2026-10-01이며 공식 상세는 접수마감이다. `python -m backend.document_review --review backend/document_reviews/2015122300019941.json --pdf docs/references/lh-notice-2015122300019941.pdf`로 확인한다. [검증 범위](../validation/2026-10-01_SECOND_NOTICE.md)를 참조한다.
 
 세 번째 강서염창 통합공공임대 정정공고는 38쪽 PDF의 1·6·21쪽에서 선정한 12개 항목을 포함한다. 원공고 6·21쪽도 대조해 현장접수 설명과 계약·입주 예정 연도를 확인했다. 6쪽의 59A 소득 1·2구간 기본 및 최대 증액·감액 금액을 구분했다. 2026-10-01 목록 조회 당시 `접수중`이었지만 앱은 신청 가능 여부를 확정하지 않는다. `python -m backend.document_review --review backend/document_reviews/2015122300020807.json --pdf docs/references/lh-notice-2015122300020807.pdf`로 검사한다. [정정 비교 기록](../validation/2026-10-01_REVISION_CANCELLATION.md)과 [전환 조건 검증](../validation/2026-10-01_RENT_CONVERSIONS.md)을 참조한다.
