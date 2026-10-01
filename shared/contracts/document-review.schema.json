@@ -39,7 +39,7 @@
         "required": ["id", "category", "label", "value", "page", "source_locator"],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"},
-          "category": {"enum": ["address", "schedule", "rent", "eligibility", "correction"]},
+          "category": {"enum": ["address", "supply", "schedule", "rent", "eligibility", "correction"]},
           "label": {"type": "string", "minLength": 1, "maxLength": 200},
           "value": {"type": "string", "minLength": 1, "maxLength": 1000},
           "page": {"type": "integer", "minimum": 1, "maximum": 1000},

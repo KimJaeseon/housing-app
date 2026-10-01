@@ -141,5 +141,5 @@ function validDocument(x:any,jobId:string,noticeId:string):x is DocumentResult{
  if(x.status!=='researching'&&(typeof x.checked_at!=='string'||!Number.isFinite(Date.parse(x.checked_at))))return false;
  if(x.status!=='partial'&&(x.reviewed||x.facts.length))return false;
  if(x.status==='partial'&&(!/^https:\/\/apply\.lh\.or\.kr\/lhapply\/lhFile\.do\?fileid=[0-9]{1,16}$/.test(x.pdf_url)||typeof x.filename!=='string'||!/^[a-f0-9]{64}$/.test(x.sha256)))return false;
- return x.facts.every((f:any)=>f&&['address','schedule','rent','eligibility','correction'].includes(f.category)&&typeof f.label==='string'&&typeof f.value==='string'&&Number.isInteger(f.page)&&f.page>=1&&f.page<=200);
+ return x.facts.every((f:any)=>f&&['address','supply','schedule','rent','eligibility','correction'].includes(f.category)&&typeof f.label==='string'&&typeof f.value==='string'&&Number.isInteger(f.page)&&f.page>=1&&f.page<=200);
 }

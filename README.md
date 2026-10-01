@@ -1,6 +1,6 @@
 # 수도권 공공주택 앱
 
-현재 단계: LH 임대주택 목록·공급정보 조회, 확인 필요/마감·취소 구분, 공고문 표본 두 건의 항목별 근거 표시(서울번동3 17개·서울오류 8개) 및 파일 변경 감지. 두 표본 모두 접수마감이다. 원문 검증 완료 공고와 로그인·저장 기능은 아직 미구현이다.
+현재 단계: LH 임대주택 목록·공급정보 조회, 확인 필요/마감·취소 구분, 공고문 표본 세 건의 항목별 근거 표시(서울번동3 17개·서울오류 8개·강서염창 7개) 및 파일 변경 감지. 첫 두 표본은 접수마감이며 강서염창은 2026-10-01 조회 당시 목록상 접수중이었다. 세 표본 모두 공고 전체 검증 완료나 신청 가능 판정은 아니다. 로그인·저장 기능은 아직 미구현이다.
 
 - [작성된 소스 명세서](docs/SOURCE_SPECIFICATION.md) — 파일·함수·API·데이터·테스트 위치
 - [다음 개발 단계](docs/NEXT_DEVELOPMENT_PLAN.md) — 우선순위·선행 조건·완료 기준
@@ -10,6 +10,7 @@
 - [공고문 검토 기록 작성 절차](docs/guides/DOCUMENT_REVIEW.md) — 새 공고 등록 전 원문 대조와 로컬 검사
 - [2026-10-01 검토 기록 변경 검증](docs/validation/2026-10-01_DOCUMENT_REVIEW.md)
 - [2026-10-01 두 번째 공고 표본 검증](docs/validation/2026-10-01_SECOND_NOTICE.md)
+- [2026-10-01 접수 중 공고 표본 검증](docs/validation/2026-10-01_ACTIVE_NOTICE.md)
 - [키 암호화 저장 안내](docs/backend/KEY_MANAGEMENT.md)
 - [제공된 API 가이드 반영 결과](docs/validation/2026-09-16_GUIDE_ALIGNMENT.md)
 - [목록 연결 구현·검증 결과](docs/validation/2026-09-16_LIST_INTEGRATION.md)

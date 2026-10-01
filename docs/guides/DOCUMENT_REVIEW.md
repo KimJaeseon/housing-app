@@ -12,3 +12,5 @@
 현재 등록된 서울번동3 정정공고는 29쪽 PDF의 1·2·3·12쪽에서 선정한 17개 항목만 포함한다. 전체 자격과 별도 변경 공지는 미검토다. 검토일은 2026-09-17이며, 앱의 원문 조회 시각은 매 요청마다 별도로 기록된다.
 
 두 번째 서울오류 행복주택 공고는 29쪽 PDF의 1·2·15쪽에서 선정한 8개 항목을 포함한다. 검토일은 2026-10-01이며 공식 상세는 접수마감이다. `python -m backend.document_review --review backend/document_reviews/2015122300019941.json --pdf docs/references/lh-notice-2015122300019941.pdf`로 확인한다. [검증 범위](../validation/2026-10-01_SECOND_NOTICE.md)를 참조한다.
+
+세 번째 강서염창 통합공공임대 정정공고는 38쪽 PDF의 1·6쪽에서 선정한 7개 항목을 포함한다. 2026-10-01 목록 조회 당시 `접수중`이었지만 앱은 신청 가능 여부를 확정하지 않는다. `python -m backend.document_review --review backend/document_reviews/2015122300020807.json --pdf docs/references/lh-notice-2015122300020807.pdf`로 검사한다. [검증 범위](../validation/2026-10-01_ACTIVE_NOTICE.md)를 참조한다.

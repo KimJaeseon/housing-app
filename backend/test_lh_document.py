@@ -13,6 +13,11 @@ HTML=Path('docs/references/lh-detail-2015122300020605.html').read_bytes()
 PDF=Path('docs/references/lh-notice-2015122300020605.pdf').read_bytes()
 ORYU_HTML=Path('docs/references/lh-detail-2015122300019941.html').read_bytes()
 ORYU_PDF=Path('docs/references/lh-notice-2015122300019941.pdf').read_bytes()
+GANGSEO_HTML=Path('docs/references/lh-detail-2015122300020807.html').read_bytes()
+GANGSEO_PDF=Path('docs/references/lh-notice-2015122300020807.pdf').read_bytes()
+GANGSEO_NOTICE={'id':'gangseo','official_id':'2015122300020807','title':'[정정공고][정정공고] 강서염창 통합공공임대주택 최초 입주자 모집공고',
+ 'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=2015122300020807&ccrCnntSysDsCd=03&uppAisTpCd=06&aisTpCd=48&mi=1026',
+            'detail_type_code':'48','housing_type_code':'06','source_system_code':'03'}}
 ORYU_NOTICE={'id':'oryu','official_id':'2015122300019941','title':'서울오류 행복주택 예비입주자 모집공고(2026.05.15)',
  'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?aisTpCd=10&ccrCnntSysDsCd=03&mi=1026&panId=2015122300019941&uppAisTpCd=06',
             'detail_type_code':'10','housing_type_code':'06','source_system_code':'03'}}
@@ -22,6 +27,20 @@ def opener(bodies):
   response=Mock();response.read.return_value=body;response.__enter__=Mock(return_value=response);response.__exit__=Mock(return_value=False);responses.append(response)
  op.open.side_effect=responses;return op
 class DocumentTests(unittest.TestCase):
+ def test_active_corrected_notice_review(self):
+  r=fetch_document(GANGSEO_NOTICE,opener([GANGSEO_HTML,GANGSEO_PDF]))
+  self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-10-01');self.assertEqual(len(r['facts']),7)
+  self.assertEqual(r['original_id'],'2015122300020753');self.assertEqual(r['current_id'],GANGSEO_NOTICE['official_id'])
+  self.assertTrue(any('2026.10.01 17:00' in f['value'] for f in r['facts']))
+  self.assertTrue(any('90,663,000' in f['value'] for f in r['facts']))
+  validate_document(dict(r,job_id='j',notice_id=GANGSEO_NOTICE['id']))
+ def test_active_notice_changed_correction_withholds_facts(self):
+  html=GANGSEO_HTML.replace('6P 일반공급 현장접수 설명 추가'.encode(), '6P 일반공급 현장접수 설명 변경'.encode())
+  r=fetch_document(GANGSEO_NOTICE,opener([html,GANGSEO_PDF]))
+  self.assertFalse(r['reviewed']);self.assertIsNone(r['reviewed_at']);self.assertEqual(r['facts'],[])
+ def test_active_notice_changed_pdf_withholds_facts(self):
+  r=fetch_document(GANGSEO_NOTICE,opener([GANGSEO_HTML,GANGSEO_PDF+b'changed']))
+  self.assertFalse(r['reviewed']);self.assertEqual(r['facts'],[])
  def test_uncorrected_notice_review(self):
   r=fetch_document(ORYU_NOTICE,opener([ORYU_HTML,ORYU_PDF]))
   self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-10-01');self.assertEqual(len(r['facts']),8)

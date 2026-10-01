@@ -872,6 +872,7 @@
               "category": {
                 "enum": [
                   "address",
+                  "supply",
                   "schedule",
                   "rent",
                   "eligibility",

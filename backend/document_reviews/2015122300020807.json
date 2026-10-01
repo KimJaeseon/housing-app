@@ -1,0 +1,85 @@
+{
+  "schema_version": "0.1.0",
+  "official_id": "2015122300020807",
+  "original_id": "2015122300020753",
+  "source": {
+    "pdf_sha256": "ecf4a3f2da9a75976de662566050b04e2bfcd58c34a18a2bef3cfc61ab76c252",
+    "page_count": 38,
+    "current_id": "2015122300020807",
+    "original_id": "2015122300020753",
+    "correction_text": "- 6P 일반공급 현장접수 설명 추가 - 21P 입주안내 오타(단순오기) 수정"
+  },
+  "review": {
+    "reviewed_at": "2026-10-01",
+    "method": "pdf_text_and_visual_review",
+    "reviewed_scope": [
+      "강서염창 정정공고 PDF 1·6쪽의 위치·공급 규모·공고일·접수 회차·59A 1·2구간 기본 임대조건 7개 항목"
+    ],
+    "unreviewed_scope": [
+      "우선공급·일반공급별 세부 신청 자격, 소득·자산·세대구성 및 전체 임대조건",
+      "6·21쪽의 정정 전후 본문 차이와 별도 변경·취소 공지의 최종 관계"
+    ]
+  },
+  "facts": [
+    {
+      "id": "gangseo-01",
+      "category": "address",
+      "label": "건설 위치",
+      "value": "서울특별시 강서구 공항대로81길 14 (염창역 동문디이스트)",
+      "page": 1,
+      "source_locator": "p.1 건설위치"
+    },
+    {
+      "id": "gangseo-02",
+      "category": "supply",
+      "label": "금회 공급 규모",
+      "value": "통합공공임대주택 전용 59㎡ 14호. 우선공급과 일반공급의 자격·배정은 별도 확인 필요",
+      "page": 1,
+      "source_locator": "p.1 공급대상"
+    },
+    {
+      "id": "gangseo-03",
+      "category": "schedule",
+      "label": "입주자 모집공고일",
+      "value": "2026.09.17. 신청 자격 판단 기준일",
+      "page": 1,
+      "source_locator": "p.1 입주자 모집공고일"
+    },
+    {
+      "id": "gangseo-04",
+      "category": "schedule",
+      "label": "일반공급 신청 접수",
+      "value": "2026.09.29 10:00 ~ 2026.10.01 17:00 (한국 시간). 현장 접수는 장애인 및 65세 이상 고령자에 한함",
+      "page": 6,
+      "source_locator": "p.6 공급일정 일반공급 및 일반공급 현장접수 안내"
+    },
+    {
+      "id": "gangseo-05",
+      "category": "schedule",
+      "label": "우선공급 신청 접수",
+      "value": "2026.09.30 10:00 ~ 18:00 (한국 시간), 현장 접수만 가능. 대상 자격은 별도 확인 필요",
+      "page": 6,
+      "source_locator": "p.6 공급일정 우선공급"
+    },
+    {
+      "id": "gangseo-06",
+      "category": "rent",
+      "label": "59A · 소득 1구간 기본 임대조건",
+      "value": "보증금 90,663,000원 · 월 임대료 659,460원. 기본 조건이며 최대 전환 조건과 구분",
+      "page": 6,
+      "source_locator": "p.6 59A 소득구간별 임대조건 표 1구간 기본"
+    },
+    {
+      "id": "gangseo-07",
+      "category": "rent",
+      "label": "59A · 소득 2구간 기본 임대조건",
+      "value": "보증금 103,615,000원 · 월 임대료 753,670원. 기본 조건이며 최대 전환 조건과 구분",
+      "page": 6,
+      "source_locator": "p.6 59A 소득구간별 임대조건 표 2구간 기본"
+    }
+  ],
+  "warnings": [
+    "공고일·접수 기간·금액은 해당 PDF의 선정 항목만 확인했습니다. 현재 접수 가능 여부는 공식 상세에서 다시 확인하세요.",
+    "소득구간 판정과 개인별 신청 자격은 제공하지 않습니다. 기본 임대조건과 선택형 전환 금액을 구분해 확인하세요."
+  ]
+}
