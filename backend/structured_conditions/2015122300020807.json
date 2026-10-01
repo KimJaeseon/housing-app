@@ -43,6 +43,58 @@
       "deposit_won": 103615000,
       "monthly_rent_won": 753670,
       "fact_id": "gangseo-07"
+    },
+    {
+      "id": "gangseo-59a-band-1-max-increase",
+      "unit": "59A",
+      "income_band": "1구간",
+      "condition": "max_increase",
+      "deposit_unit": "원",
+      "deposit_raw": 169663000,
+      "deposit_won": 169663000,
+      "monthly_rent_won": 264460,
+      "base_rent_id": "gangseo-59a-band-1-basic",
+      "conversion_delta_won": 79000000,
+      "fact_id": "gangseo-09"
+    },
+    {
+      "id": "gangseo-59a-band-1-max-decrease",
+      "unit": "59A",
+      "income_band": "1구간",
+      "condition": "max_decrease",
+      "deposit_unit": "원",
+      "deposit_raw": 21663000,
+      "deposit_won": 21663000,
+      "monthly_rent_won": 860710,
+      "base_rent_id": "gangseo-59a-band-1-basic",
+      "conversion_delta_won": -69000000,
+      "fact_id": "gangseo-10"
+    },
+    {
+      "id": "gangseo-59a-band-2-max-increase",
+      "unit": "59A",
+      "income_band": "2구간",
+      "condition": "max_increase",
+      "deposit_unit": "원",
+      "deposit_raw": 193615000,
+      "deposit_won": 193615000,
+      "monthly_rent_won": 303670,
+      "base_rent_id": "gangseo-59a-band-2-basic",
+      "conversion_delta_won": 90000000,
+      "fact_id": "gangseo-11"
+    },
+    {
+      "id": "gangseo-59a-band-2-max-decrease",
+      "unit": "59A",
+      "income_band": "2구간",
+      "condition": "max_decrease",
+      "deposit_unit": "원",
+      "deposit_raw": 24615000,
+      "deposit_won": 24615000,
+      "monthly_rent_won": 984080,
+      "base_rent_id": "gangseo-59a-band-2-basic",
+      "conversion_delta_won": -79000000,
+      "fact_id": "gangseo-12"
     }
   ]
 }

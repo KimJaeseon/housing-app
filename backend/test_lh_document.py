@@ -40,10 +40,12 @@ def opener(bodies):
 class DocumentTests(unittest.TestCase):
  def test_active_corrected_notice_review(self):
   r=fetch_document(GANGSEO_NOTICE,opener([GANGSEO_HTML,GANGSEO_PDF]))
-  self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-10-01');self.assertEqual(len(r['facts']),8)
+  self.assertTrue(r['reviewed']);self.assertEqual(r['reviewed_at'],'2026-10-01');self.assertEqual(len(r['facts']),12)
   self.assertEqual(r['original_id'],'2015122300020753');self.assertEqual(r['current_id'],GANGSEO_NOTICE['official_id'])
   self.assertTrue(any('2026.10.01 17:00' in f['value'] for f in r['facts']))
   self.assertTrue(any('90,663,000' in f['value'] for f in r['facts']))
+  self.assertTrue(any('169,663,000' in f['value'] for f in r['facts']))
+  self.assertTrue(any('21,663,000' in f['value'] for f in r['facts']))
   self.assertTrue(any('2027.02.15' in f['value'] for f in r['facts']))
   validate_document(dict(r,job_id='j',notice_id=GANGSEO_NOTICE['id']))
  def test_original_pdf_never_inherits_correction_review(self):

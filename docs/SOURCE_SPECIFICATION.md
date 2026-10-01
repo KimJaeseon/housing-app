@@ -73,7 +73,7 @@ flowchart TD
 | [lh_supply.py](../backend/lh_supply.py) | parameters, numeric_fact, parse_supply, fetch_supply | 지원 레이아웃 요청, 숫자·단위 검증, 주택형·근거 생성 |
 | [lh_document.py](../backend/lh_document.py) | Node, Tree, read_page, apply_review, fetch_document | 상세 HTML 식별, 공고문 PDF 선택, 해시·정정 관계와 검토 기록 대조 |
 | [document_review.py](../backend/document_review.py) | load_review, validate_pdf, main | 검토 기록 Schema·식별자·쪽 범위·중복 근거 검사, 로컬 PDF 해시 확인 CLI. 외부 요청 없음 |
-| [structured_conditions.py](../backend/structured_conditions.py) | load_conditions, main | 강서염창 접수 회차·기본 금액의 대상·시각·단위·근거 ID를 검토 기록과 로컬 PDF에 대조. 조회 응답에는 미연결 |
+| [structured_conditions.py](../backend/structured_conditions.py) | load_conditions, main | 강서염창 접수 회차·기본/최대 전환 금액의 대상·시각·단위·근거 ID와 보증금 증감액을 검토 기록 및 로컬 PDF에 대조. 구조화 기록은 조회 응답에 미연결 |
 | [lh_probe.py](../backend/lh_probe.py) | 요청 구성·키 정규화·NoRedirect·접속 점검 | API 요청 규격, bounded read 공통값, 리다이렉트 거부 |
 | [lh_errors.py](../backend/lh_errors.py) | mapped_error, payload_error, decode_response | 알려진 JSON/XML 오류 코드만 반환, 원격 오류 본문·인증정보 비전파 |
 | [lh_adapter.py](../backend/lh_adapter.py) | collect | 기존 접속 점검 경로. 실제 목록 모드와 구분 |
@@ -111,7 +111,7 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 4. [검토 기록](../backend/document_reviews/2015122300020605.json)을 [전용 Schema](../shared/contracts/document-review.schema.json)와 `load_review`로 검사한다. 공고 ID·SHA-256·원공고 ID·현재 ID·정정 사유를 실제 자료와 비교한다. 기록의 중복 ID, 쪽 범위 초과, 근거 위치 불일치도 거부한다.
 5. 모두 일치할 때만 해당 기록의 사실과 `reviewed_at`을 응답에 복사하고 미검토 범위를 안내한다. 다른 파일·미등록·형식 오류 기록은 facts 없이 재검토 안내를 반환한다.
 
-현재 서울번동3 정정공고 PDF의 17항목, 서울오류 비정정공고 PDF의 8항목, 강서염창 정정공고 PDF의 8항목을 검토했다. 강서염창의 원공고 6·21쪽도 대조했다. 첫 두 공고는 접수마감이며 강서염창은 2026-10-01 목록 조회 당시 접수중이었다. 서버는 PDF 텍스트를 매번 자동 추출하거나 자격을 추론하지 않는다. 텍스트 추출·표 렌더링 검토는 개발 과정에서 별도로 수행했다. reviewed=true는 해당 항목들의 검토 기록 일치이며 공고 전체 verified와 다르다.
+현재 서울번동3 정정공고 PDF의 17항목, 서울오류 비정정공고 PDF의 8항목, 강서염창 정정공고 PDF의 12항목을 검토했다. 강서염창의 원공고 6·21쪽도 대조했다. 첫 두 공고는 접수마감이며 강서염창은 2026-10-01 목록 조회 당시 접수중이었다. 서버는 PDF 텍스트를 매번 자동 추출하거나 자격을 추론하지 않는다. 텍스트 추출·표 렌더링 검토는 개발 과정에서 별도로 수행했다. reviewed=true는 해당 항목들의 검토 기록 일치이며 공고 전체 verified와 다르다.
 
 검토 기록 작성자는 `python -m backend.document_review --review backend/document_reviews/2015122300020605.json --pdf docs/references/lh-notice-2015122300020605.pdf`로 로컬 PDF 해시를 확인한다. 정상 출력에는 공고 ID, 항목 수, 검토일만 포함된다. 종료 코드 2는 기록 또는 PDF가 일치하지 않음을 뜻한다. 기록의 `source_locator`는 사람이 PDF를 다시 볼 위치이고, 이 도구가 텍스트·표의 의미나 금액 환산을 자동 증명하지는 않는다. 새 공고를 등록하려면 원문 추출 후보와 사람이 대조한 값을 분리하고, 파일 역할·쪽·단위·대상별 조건을 확인한 뒤 기록을 작성해야 한다.
 
@@ -121,7 +121,7 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 
 실제 인천 취소 공고는 목록 상태 필드가 `접수마감`이지만 제목에 `[취소공고]`가 있어 `cancelled`로 제외된다. 공식 상세의 취소 사유는 있지만 PDF가 없으므로 `lh_document.py`는 `DOCUMENT_CANCELLED_NO_PDF`를 반환한다. 원공고 PDF나 다른 기록의 사실을 재사용하지 않는다. [정정·취소 검증 기록](validation/2026-10-01_REVISION_CANCELLATION.md)에 공식 관계와 보존 자료를 남겼다.
 
-인천 후속 후보 `…7565`의 정정본 `…7569`은 상세 메타데이터로 연결되지만 취소본 `…7563`과 직접 연결된 번호는 확인되지 않았다. [회귀검사](../backend/test_lh_document.py)와 [검증 기록](validation/2026-10-01_INCHEON_RELATION_AND_CONDITIONS.md)은 두 이력을 분리한다. 강서염창 [구조화 기록](../backend/structured_conditions/2015122300020807.json)은 검토 항목 ID와 PDF 해시에 결합하며, 별도 CLI로 날짜·대상·금액 불일치를 거부한다. 현재 내부 검토 자료이며 API와 화면의 판정에는 적용되지 않는다.
+인천 후속 후보 `…7565`의 정정본 `…7569`은 상세 메타데이터로 연결되지만 취소본 `…7563`과 직접 연결된 번호는 확인되지 않았다. [회귀검사](../backend/test_lh_document.py)와 [검증 기록](validation/2026-10-01_INCHEON_RELATION_AND_CONDITIONS.md)은 두 이력을 분리한다. 강서염창 [구조화 기록](../backend/structured_conditions/2015122300020807.json)은 검토 항목 ID와 PDF 해시에 결합하며, 별도 CLI로 날짜·대상·기본/전환 금액 불일치를 거부한다. [최대 전환 검증](validation/2026-10-01_RENT_CONVERSIONS.md)은 1·2구간에 한정된다. 구조화 기록은 내부 검토 자료이며 API와 화면의 판정에는 적용되지 않는다.
 
 ## 4. 내부 API 명세
 
@@ -185,7 +185,7 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 | 목록·응답 | test_lh_list.py, test_lh_guide.py, test_lh_envelope.py | 조건 미반영·페이지 변경·잘못된 행·마감 제외 |
 | 공급정보 | test_lh_supply.py | 단위 누락·공고문 참조·공고 불일치·잘못된 숫자 |
 | 원문·검토 기록 | test_lh_document.py | 해시/관계 변경 시 값 보류, PDF 위장·크기·URL 제한 |
-| 구조화 조건 | test_structured_conditions.py | 다른 PDF·접수 대상/시각·소득구간·금액·전환 조건 혼입 거부 |
+| 구조화 조건 | test_structured_conditions.py | 다른 PDF·접수 대상/시각·소득구간·금액·전환 근거·보증금 증감 방향 혼입 거부 |
 | 키 저장 | test_key_store.py | 암호화 왕복·변조·환경 우선순위·비노출 |
 | 참조 판정 | backend/contracts/test_reference_rules.py | 접수 경계·취소·정정·미확인 |
 | 앱 상태·UI | tsc, Expo export, frontend/qa.mjs | 오래된 응답·초점·조건별 금액·좁은 화면·오류 |

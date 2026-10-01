@@ -23,7 +23,7 @@ class StructuredConditionsTests(unittest.TestCase):
     def test_reviewed_conditions(self):
         record = load_conditions(CONDITIONS, REVIEW)
         self.assertEqual(len(record['windows']), 2)
-        self.assertEqual(len(record['rents']), 2)
+        self.assertEqual(len(record['rents']), 6)
 
     def test_wrong_review_version(self):
         self.check_changed(lambda record: record.update(pdf_sha256='0' * 64))
@@ -45,6 +45,18 @@ class StructuredConditionsTests(unittest.TestCase):
 
     def test_conversion_condition_cannot_masquerade_as_basic(self):
         self.check_changed(lambda record: record['rents'][0].update(condition='max_increase'))
+
+    def test_conversion_requires_matching_basic_condition(self):
+        self.check_changed(lambda record: record['rents'][2].update(base_rent_id='gangseo-59a-band-2-basic'))
+
+    def test_conversion_delta_and_monthly_direction(self):
+        self.check_changed(lambda record: record['rents'][2].update(conversion_delta_won=80000000))
+        self.check_changed(lambda record: record['rents'][3].update(conversion_delta_won=69000000))
+        self.check_changed(lambda record: record['rents'][2].update(monthly_rent_won=659460))
+
+    def test_conversion_fact_and_duplicate_condition(self):
+        self.check_changed(lambda record: record['rents'][2].update(fact_id='gangseo-10'))
+        self.check_changed(lambda record: record['rents'][2].update(condition='max_decrease'))
 
 
 if __name__ == '__main__':
