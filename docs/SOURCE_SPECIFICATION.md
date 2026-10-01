@@ -73,6 +73,7 @@ flowchart TD
 | [lh_supply.py](../backend/lh_supply.py) | parameters, numeric_fact, parse_supply, fetch_supply | 지원 레이아웃 요청, 숫자·단위 검증, 주택형·근거 생성 |
 | [lh_document.py](../backend/lh_document.py) | Node, Tree, read_page, apply_review, fetch_document | 상세 HTML 식별, 공고문 PDF 선택, 해시·정정 관계와 검토 기록 대조 |
 | [document_review.py](../backend/document_review.py) | load_review, validate_pdf, main | 검토 기록 Schema·식별자·쪽 범위·중복 근거 검사, 로컬 PDF 해시 확인 CLI. 외부 요청 없음 |
+| [structured_conditions.py](../backend/structured_conditions.py) | load_conditions, main | 강서염창 접수 회차·기본 금액의 대상·시각·단위·근거 ID를 검토 기록과 로컬 PDF에 대조. 조회 응답에는 미연결 |
 | [lh_probe.py](../backend/lh_probe.py) | 요청 구성·키 정규화·NoRedirect·접속 점검 | API 요청 규격, bounded read 공통값, 리다이렉트 거부 |
 | [lh_errors.py](../backend/lh_errors.py) | mapped_error, payload_error, decode_response | 알려진 JSON/XML 오류 코드만 반환, 원격 오류 본문·인증정보 비전파 |
 | [lh_adapter.py](../backend/lh_adapter.py) | collect | 기존 접속 점검 경로. 실제 목록 모드와 구분 |
@@ -119,6 +120,8 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 세 번째 표본은 [강서염창 검토 기록](../backend/document_reviews/2015122300020807.json)과 [보존 PDF](references/lh-notice-2015122300020807.pdf)를 사용한다. 목록·상세·PDF 재조회 및 미검토 범위는 [접수 중 표본 검증 기록](validation/2026-10-01_ACTIVE_NOTICE.md)에 남겼다.
 
 실제 인천 취소 공고는 목록 상태 필드가 `접수마감`이지만 제목에 `[취소공고]`가 있어 `cancelled`로 제외된다. 공식 상세의 취소 사유는 있지만 PDF가 없으므로 `lh_document.py`는 `DOCUMENT_CANCELLED_NO_PDF`를 반환한다. 원공고 PDF나 다른 기록의 사실을 재사용하지 않는다. [정정·취소 검증 기록](validation/2026-10-01_REVISION_CANCELLATION.md)에 공식 관계와 보존 자료를 남겼다.
+
+인천 후속 후보 `…7565`의 정정본 `…7569`은 상세 메타데이터로 연결되지만 취소본 `…7563`과 직접 연결된 번호는 확인되지 않았다. [회귀검사](../backend/test_lh_document.py)와 [검증 기록](validation/2026-10-01_INCHEON_RELATION_AND_CONDITIONS.md)은 두 이력을 분리한다. 강서염창 [구조화 기록](../backend/structured_conditions/2015122300020807.json)은 검토 항목 ID와 PDF 해시에 결합하며, 별도 CLI로 날짜·대상·금액 불일치를 거부한다. 현재 내부 검토 자료이며 API와 화면의 판정에는 적용되지 않는다.
 
 ## 4. 내부 API 명세
 
@@ -182,6 +185,7 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 | 목록·응답 | test_lh_list.py, test_lh_guide.py, test_lh_envelope.py | 조건 미반영·페이지 변경·잘못된 행·마감 제외 |
 | 공급정보 | test_lh_supply.py | 단위 누락·공고문 참조·공고 불일치·잘못된 숫자 |
 | 원문·검토 기록 | test_lh_document.py | 해시/관계 변경 시 값 보류, PDF 위장·크기·URL 제한 |
+| 구조화 조건 | test_structured_conditions.py | 다른 PDF·접수 대상/시각·소득구간·금액·전환 조건 혼입 거부 |
 | 키 저장 | test_key_store.py | 암호화 왕복·변조·환경 우선순위·비노출 |
 | 참조 판정 | backend/contracts/test_reference_rules.py | 접수 경계·취소·정정·미확인 |
 | 앱 상태·UI | tsc, Expo export, frontend/qa.mjs | 오래된 응답·초점·조건별 금액·좁은 화면·오류 |
@@ -193,7 +197,7 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 
 - 현재 HTML 구조와 JavaScript 변수명에 의존한다. 사이트가 바뀌면 기존 값을 유지하지 않고 실패 또는 검토 필요로 처리한다.
 - 단일 PDF만 선택한다. HWPX 전용·복수 공고문·스캔 문서의 자동 처리는 없다.
-- 검토 기록은 항목 설명 문자열이다. `source_locator`는 사람이 근거 쪽을 찾는 위치이며 CLI가 원문 문장·표 수치·환산 정확성을 자동 판정하지 않는다. 대상별 금액·전환 조건·접수 회차·자격 조건의 정규화 모델 확장이 필요하다.
+- 검토 기록은 항목 설명 문자열이다. `source_locator`는 사람이 근거 쪽을 찾는 위치다. 첫 구조화 기록은 일정·금액 문자열과 PDF 해시의 일치 여부를 검사하지만 PDF 표 자체의 의미를 자동 증명하지 않는다. 전환 조건·추가 공고·자격 조건으로 정규화 모델을 확장해야 한다.
 - API 공급 사실과 원문 사실을 병합해 확인 완료로 승격하는 경로는 없다.
 - 세션·작업·키 저장은 로컬 개발 중심이다. 데이터 만료, 저장소, 계정 권한, 운영 배포를 별도로 설계해야 한다.
 - 모든 화면 변경은 접근성 정책과 기존 QA를 따른다. 사용자 모바일 실기 확인을 웹 자동검사로 대체하지 않는다.

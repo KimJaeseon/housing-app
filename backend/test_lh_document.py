@@ -18,6 +18,8 @@ GANGSEO_PDF=Path('docs/references/lh-notice-2015122300020807.pdf').read_bytes()
 GANGSEO_ORIGINAL_HTML=Path('docs/references/lh-detail-2015122300020753.html').read_bytes()
 GANGSEO_ORIGINAL_PDF=Path('docs/references/lh-notice-2015122300020753.pdf').read_bytes()
 CANCEL_HTML=Path('docs/references/lh-detail-2015122300017563.html').read_bytes()
+INCHEON_NEW_HTML=Path('docs/references/lh-detail-2015122300017565.html').read_bytes()
+INCHEON_CORRECTED_HTML=Path('docs/references/lh-detail-2015122300017569.html').read_bytes()
 GANGSEO_NOTICE={'id':'gangseo','official_id':'2015122300020807','title':'[정정공고][정정공고] 강서염창 통합공공임대주택 최초 입주자 모집공고',
  'listing':{'official_url':'https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancInfo.do?panId=2015122300020807&ccrCnntSysDsCd=03&uppAisTpCd=06&aisTpCd=48&mi=1026',
             'detail_type_code':'48','housing_type_code':'06','source_system_code':'03'}}
@@ -54,6 +56,23 @@ class DocumentTests(unittest.TestCase):
   r=fetch_document(CANCEL_NOTICE,opener([CANCEL_HTML]))
   self.assertEqual(r['error_code'],'DOCUMENT_CANCELLED_NO_PDF');self.assertFalse(r['reviewed']);self.assertEqual(r['facts'],[])
   validate_document(dict(r,job_id='j',notice_id=CANCEL_NOTICE['id']))
+ def test_incheon_new_chain_does_not_inherit_cancelled_original(self):
+  from backend.lh_document import Tree
+  tree=Tree();tree.feed(INCHEON_CORRECTED_HTML.decode('utf-8'))
+  title=[n for n in tree.root.all('div') if 'bbs_ViewA' in n.attrs.get('class','').split()][0].all('h3')[0].text()
+  notice={'title':title,'official_id':'2015122300017569'}
+  meta=read_page(INCHEON_CORRECTED_HTML,notice)
+  self.assertEqual(meta['current_id'],'2015122300017569')
+  self.assertEqual(meta['original_id'],'2015122300017565')
+  self.assertEqual(meta['attachment']['file_id'],'60700335')
+  self.assertIn('신청자격 관련',meta['correction'])
+  self.assertNotIn(b'2015122300017558',INCHEON_CORRECTED_HTML)
+  self.assertNotIn(b'2015122300017563',INCHEON_CORRECTED_HTML)
+  # The superseded original page contains both its own and its correction's
+  # IDs. It must not silently inherit the correction's reviewed values.
+  original_title=title.removeprefix('[정정공고]')
+  with self.assertRaisesRegex(ValueError,'DOCUMENT_PAGE_UNCONFIRMED'):
+   read_page(INCHEON_NEW_HTML,{'title':original_title,'official_id':'2015122300017565'})
  def test_active_notice_changed_correction_withholds_facts(self):
   html=GANGSEO_HTML.replace('6P 일반공급 현장접수 설명 추가'.encode(), '6P 일반공급 현장접수 설명 변경'.encode())
   r=fetch_document(GANGSEO_NOTICE,opener([html,GANGSEO_PDF]))
