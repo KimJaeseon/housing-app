@@ -1,0 +1,2 @@
+# Evidence hashes must survive Windows/Linux checkout without newline conversion.
+docs/references/lh-bulletin-*.html -text

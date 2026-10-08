@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Partial separate LH bulletin snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "coverage", "relation", "html_scope", "response_html_sha256", "candidate_official_id", "source_url", "checked_at", "html_artifact", "html_sha256", "bulletin_id", "title", "published_on", "summary", "attachments"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "coverage": {"const": "partial"},
+    "relation": {"const": "candidate"},
+    "html_scope": {"const": "public_extract"},
+    "response_html_sha256": {"$ref": "#/$defs/hash"},
+    "candidate_official_id": {"type": "string", "pattern": "^[0-9]{1,32}$"},
+    "source_url": {"type": "string", "maxLength": 300, "format": "uri"},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "html_artifact": {"type": "string", "pattern": "^lh-bulletin-[0-9]{1,16}\\.html$"},
+    "html_sha256": {"$ref": "#/$defs/hash"},
+    "bulletin_id": {"type": "string", "pattern": "^[0-9]{1,16}$"},
+    "title": {"type": "string", "minLength": 1, "maxLength": 500},
+    "published_on": {"type": "string", "format": "date"},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 20000},
+    "attachments": {
+      "type": "array", "minItems": 1, "maxItems": 5,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["file_id", "filename", "url", "artifact", "sha256"],
+        "properties": {
+          "file_id": {"type": "string", "pattern": "^[0-9]{1,16}$"},
+          "filename": {"type": "string", "minLength": 1, "maxLength": 300},
+          "url": {"type": "string", "maxLength": 200, "format": "uri"},
+          "artifact": {"type": "string", "pattern": "^lh-bulletin-[0-9]{1,16}-[0-9]{1,16}\\.pdf$"},
+          "sha256": {"$ref": "#/$defs/hash"}
+        }
+      }
+    }
+  },
+  "$defs": {"hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+}

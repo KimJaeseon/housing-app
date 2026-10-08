@@ -9,6 +9,8 @@
 
 ## 1. 구성 및 경계
 
+2026-10-08 P4 후속: `backend/separate_notice.py`의 `capture`는 LH 공개 공지와 첨부를 제한된 URL·용량·리다이렉트 정책으로 읽는다. `load_snapshot`은 `shared/contracts/separate-notice.schema.json`, `backend/separate_notices/` 기록과 `docs/references/`의 공개 본문 추출본·PDF를 결합해 검사한다. `backend/verification_gate.py`의 선택 옵션으로 연결했으며 후보 관계·부분 검토를 유지한다. API/화면에는 아직 연결하지 않았다. [최신 범위·검증 기록](validation/2026-10-08_SEPARATE_NOTICE.md)을 참조한다.
+
 ```mermaid
 flowchart TD
     A[App.tsx 검색·목록·상세] --> B[useSearchApi.ts 요청·폴링·취소]

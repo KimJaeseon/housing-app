@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1.0",
+  "coverage": "partial",
+  "relation": "candidate",
+  "candidate_official_id": "2015122300020807",
+  "source_url": "https://apply.lh.or.kr/lhapply/apply/noti/an/view.do?bbsSn=9102835612&ccrCnntSysDsCd=03&mi=1079",
+  "checked_at": "2026-10-08T05:01:58.222988+00:00",
+  "html_artifact": "lh-bulletin-9102835612.html",
+  "html_sha256": "d1dfc047cbed7388f4f807e68675f42456b1e0005418633b433acf02664165ab",
+  "bulletin_id": "9102835612",
+  "title": "[신청현황게시] 강서염창 통합공공임대주택 청약접수결과",
+  "published_on": "2026-10-01",
+  "summary": "내용 강서염창 통합공공임대주택 청약접수 결과 및 경쟁률을 게시하오니, 참고하시기 바랍니다.",
+  "attachments": [
+    {
+      "file_id": "68835087",
+      "filename": "청약접수결과(강서염창통합공공임대주택,'26.9.17.공고)_게시용.pdf",
+      "url": "https://apply.lh.or.kr/lhapply/lhFile.do?fileid=68835087",
+      "artifact": "lh-bulletin-9102835612-68835087.pdf",
+      "sha256": "c986139c9f4dd2b274caa1e3c1afe8695024563cac1113e66d67619af0bce544"
+    }
+  ],
+  "html_scope": "public_extract",
+  "response_html_sha256": "ef5b4b24b72628fedbdda2a162aef5e57d8550a9e5e25ba4f07c5c652fde36ca"
+}
