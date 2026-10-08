@@ -197,6 +197,10 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 
 ## 8. 알려진 유지보수 제약
 
+같은 날 후속 확장에서 내부 자격 Schema는 0.2.0, 규칙은 46개로 갱신됐다. AND/OR 조건, 소득·자산별 범위, 자산·소득 수치 한도 및 출산 인정 근거 연결을 검사한다. 현재 수치 소득표는 일반공급 신혼부부·한부모가족 제외 계층 6행에 한정된다. [현재 검증·남은 범위](validation/2026-10-08_ELIGIBILITY_EXPANSION.md)를 참조한다.
+
+2026-10-08: 자격 모델 첫 범위를 추가했다. `backend/eligibility_conditions.py`의 `load_eligibility`는 `shared/contracts/eligibility-conditions.schema.json` 및 `backend/eligibility_reviews/`에 근거를 둔 `backend/eligibility_conditions/`를 검사한다. CLI는 로컬 PDF 해시도 확인한다. 신규 검사는 `backend/test_eligibility_conditions.py`다. 현재 내부 부분 검토 자료이며 API·앱·개인 적격 판정에는 연결하지 않는다. [검증 기록](validation/2026-10-08_ELIGIBILITY_MODEL.md)을 참조한다.
+
 - 현재 HTML 구조와 JavaScript 변수명에 의존한다. 사이트가 바뀌면 기존 값을 유지하지 않고 실패 또는 검토 필요로 처리한다.
 - 단일 PDF만 선택한다. HWPX 전용·복수 공고문·스캔 문서의 자동 처리는 없다.
 - 검토 기록은 항목 설명 문자열이다. `source_locator`는 사람이 근거 쪽을 찾는 위치다. 첫 구조화 기록은 일정·금액 문자열과 PDF 해시의 일치 여부를 검사하지만 PDF 표 자체의 의미를 자동 증명하지 않는다. 전환 조건·추가 공고·자격 조건으로 정규화 모델을 확장해야 한다.

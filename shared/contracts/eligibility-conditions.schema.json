@@ -1,0 +1,385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:housing:eligibility-conditions:0.2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "official_id",
+    "pdf_sha256",
+    "coverage",
+    "applicant_evaluation",
+    "as_of",
+    "rules",
+    "unreviewed_dimensions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.2.0"
+    },
+    "official_id": {
+      "type": "string",
+      "pattern": "^[0-9]{1,32}$"
+    },
+    "pdf_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "coverage": {
+      "const": "partial"
+    },
+    "applicant_evaluation": {
+      "const": false
+    },
+    "as_of": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "fact_id"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "fact_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    },
+    "unreviewed_dimensions": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "enum": [
+          "income",
+          "assets",
+          "household_definition",
+          "housing_ownership_exceptions",
+          "supply_category",
+          "disqualifications",
+          "latest_changes"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "applies_to",
+        "fact_id",
+        "source_text",
+        "exception_of",
+        "predicate"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "applies_to": {
+          "$ref": "#/$defs/text"
+        },
+        "fact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_text": {
+          "$ref": "#/$defs/text"
+        },
+        "exception_of": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "predicate": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "years"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "age_minimum"
+                },
+                "years": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "scope"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "housing_scope"
+                },
+                "scope": {
+                  "enum": [
+                    "household",
+                    "applicant",
+                    "future_household"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "requirements"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "manual_exception"
+                },
+                "requirements": {
+                  "type": "array",
+                  "minItems": 2,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "dimension",
+                "requirements"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "reviewed_all_of"
+                },
+                "dimension": {
+                  "enum": [
+                    "household_definition",
+                    "child_counting",
+                    "income",
+                    "assets",
+                    "supply_category",
+                    "disqualifications"
+                  ]
+                },
+                "requirements": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "dimension",
+                "alternatives"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "reviewed_any_of"
+                },
+                "dimension": {
+                  "enum": [
+                    "household_definition",
+                    "child_counting",
+                    "income",
+                    "assets",
+                    "supply_category",
+                    "disqualifications"
+                  ]
+                },
+                "alternatives": {
+                  "type": "array",
+                  "minItems": 2,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "#/$defs/text"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "resource",
+                "scope",
+                "requirements"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "resource_scope"
+                },
+                "resource": {
+                  "enum": [
+                    "income",
+                    "assets"
+                  ]
+                },
+                "scope": {
+                  "enum": [
+                    "household",
+                    "applicant",
+                    "future_household"
+                  ]
+                },
+                "requirements": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "children_band",
+                "total_assets_won",
+                "car_won",
+                "counting_rule_id"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "asset_limits"
+                },
+                "children_band": {
+                  "enum": [
+                    "0",
+                    "1",
+                    "2+"
+                  ]
+                },
+                "total_assets_won": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100000000000
+                },
+                "car_won": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                },
+                "counting_rule_id": {
+                  "$ref": "#/$defs/id"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "supply",
+                "applicant_group",
+                "household_size_min",
+                "household_size_max",
+                "children_band",
+                "percent",
+                "counting_rule_id"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "income_limit"
+                },
+                "supply": {
+                  "const": "general"
+                },
+                "applicant_group": {
+                  "const": "excluding_newlyweds_single_parents"
+                },
+                "household_size_min": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "household_size_max": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "children_band": {
+                  "enum": [
+                    "0",
+                    "1",
+                    "2+"
+                  ]
+                },
+                "percent": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300
+                },
+                "counting_rule_id": {
+                  "$ref": "#/$defs/id"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

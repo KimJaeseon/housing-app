@@ -1,0 +1,409 @@
+{
+  "schema_version": "0.1.0",
+  "official_id": "2015122300020807",
+  "original_id": "2015122300020753",
+  "source": {
+    "pdf_sha256": "ecf4a3f2da9a75976de662566050b04e2bfcd58c34a18a2bef3cfc61ab76c252",
+    "page_count": 38,
+    "current_id": "2015122300020807",
+    "original_id": "2015122300020753",
+    "correction_text": "- 6P 일반공급 현장접수 설명 추가 - 21P 입주안내 오타(단순오기) 수정"
+  },
+  "review": {
+    "reviewed_at": "2026-10-08",
+    "method": "pdf_text_and_visual_review",
+    "reviewed_scope": [
+      "보존 정정 PDF 8·9쪽의 판단 기준일, 성년 원칙과 미성년자 예외 4가지, 주택소유 검증 대상 원칙과 예외 3가지",
+      "보존 PDF 9~17쪽의 세대 정의·제외, 소득/자산 검증 범위, 출산 가산, 자산 표 3행, 일반 비신혼 계층 소득 표 6행, 공급계층의 조건과 대안 및 철거민 면제. 상세 산정방법·전체 소득표·법령 외부 대조는 미완료"
+    ],
+    "unreviewed_scope": [
+      "주택소유 인정 예외 전체와 소득·자산 상세 산정방법·공적자료 항목",
+      "신혼부부·한부모 소득 표의 전체 행, 우선공급 별도 안내문과 관계 법령·추가 신청 증빙",
+      "중복신청·입주 전 세대분리·기타 결격 및 유지 의무 전체",
+      "별도 변경·취소 공지 및 현재 공고 유효성"
+    ]
+  },
+  "facts": [
+    {
+      "id": "eligibility-date",
+      "category": "schedule",
+      "label": "자격 판단 기준일",
+      "value": "2026.09.17. 입주자 모집공고일 현재 기준",
+      "page": 8,
+      "source_locator": "p.8 4. 입주자격"
+    },
+    {
+      "id": "age-default",
+      "category": "eligibility",
+      "label": "일반 성년 기준",
+      "value": "19세 미만은 원칙적으로 신청 불가. 법정대리인의 동의 또는 대리를 통한 미성년자 예외가 있음.",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "age-child",
+      "category": "eligibility",
+      "label": "자녀 양육 미성년 세대주",
+      "value": "법정대리인의 동의 또는 대리; 자녀를 양육하는 세대주인 미성년자; 자녀가 신청자와 같은 세대별 주민등록표에 등재",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "age-sibling",
+      "category": "eligibility",
+      "label": "형제자매 부양 미성년 세대주",
+      "value": "법정대리인의 동의 또는 대리; 직계존속의 사망, 실종선고 및 행방불명 등으로 형제자매를 부양하여야 하는 세대주인 미성년자; 형제자매가 신청자와 같은 세대별 주민등록표에 등재",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "age-foreign-parent",
+      "category": "eligibility",
+      "label": "외국인 부 또는 모가 있는 한부모가족 미성년 세대주",
+      "value": "법정대리인의 동의 또는 대리; 부 또는 모가 외국인인 한부모가족; 미성년 자녀(내국인)가 세대주",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "age-youth-engaged",
+      "category": "eligibility",
+      "label": "청년 또는 예비신혼부부의 미성년 예외",
+      "value": "법정대리인의 동의 또는 대리; 청년 또는 예비신혼부부",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "housing-default",
+      "category": "eligibility",
+      "label": "무주택세대구성원 일반 기준",
+      "value": "세대구성원 전원이 주택(분양권 등 포함)을 소유하지 않은 세대의 구성원. 세대구성원 정의와 주택소유 인정 예외는 별도 검토 필요.",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "housing-youth",
+      "category": "eligibility",
+      "label": "청년 계층의 주택소유 검증 대상",
+      "value": "청년 계층은 주택소유여부를 신청자 본인에 한하여 검증. 소득·자산 검증 대상까지 본인으로 축소하는 규칙은 아님.",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "housing-elderly",
+      "category": "eligibility",
+      "label": "혼인 중이 아니며 단독세대주로 입주하려는 고령자 계층의 주택소유 검증 대상",
+      "value": "혼인 중이 아니며 단독세대주로 입주하려는 고령자 계층은 주택소유여부를 신청자 본인에 한하여 검증. 전체 고령자에게 일괄 적용하지 않음.",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "housing-engaged",
+      "category": "eligibility",
+      "label": "예비신혼부부의 주택소유 검증 대상",
+      "value": "예비신혼부부는 혼인으로 구성될 세대의 세대구성원 모두를 대상으로 주택소유여부 검증.",
+      "page": 9,
+      "source_locator": "p.9 성년자인 무주택세대구성원 기준"
+    },
+    {
+      "id": "household-applicant",
+      "category": "eligibility",
+      "label": "세대 정의: 신청자",
+      "value": "적용 차원 household_definition; 신청자는 세대구성원에 포함",
+      "page": 9,
+      "source_locator": "p.9 세대 정의: 신청자"
+    },
+    {
+      "id": "household-spouse",
+      "category": "eligibility",
+      "label": "세대 정의: 배우자",
+      "value": "적용 차원 household_definition; 신청자의 배우자는 세대구성원에 포함; 신청자와 주민등록상 세대 분리된 배우자도 포함",
+      "page": 9,
+      "source_locator": "p.9 세대 정의: 배우자"
+    },
+    {
+      "id": "household-direct-family",
+      "category": "eligibility",
+      "label": "세대 정의: 직계가족 첫 그룹",
+      "value": "적용 차원 household_definition; 신청자의 직계존속, 배우자의 직계존속, 신청자의 직계비속 및 그 배우자; 신청자 또는 분리배우자의 세대별 주민등록표에 함께 등재된 사람에 한함",
+      "page": 9,
+      "source_locator": "p.9 세대 정의: 직계가족 첫 그룹"
+    },
+    {
+      "id": "household-spouse-descendants",
+      "category": "eligibility",
+      "label": "세대 정의: 배우자 직계비속 그룹",
+      "value": "적용 차원 household_definition; 배우자의 직계비속 및 그 배우자; 신청자의 세대별 주민등록표에 함께 등재된 사람에 한함",
+      "page": 9,
+      "source_locator": "p.9 세대 정의: 배우자 직계비속 그룹"
+    },
+    {
+      "id": "household-foreign-spouse",
+      "category": "eligibility",
+      "label": "세대 정의: 외국인 배우자",
+      "value": "적용 차원 household_definition; 공고일 현재 가족관계등록부에 등재; 외국인등록 또는 국내거소신고를 완료해 사실증명 가능; 신청자와 같은 주소에 거주하지 않아도 포함",
+      "page": 9,
+      "source_locator": "p.9 세대 정의: 외국인 배우자"
+    },
+    {
+      "id": "household-foreign-family",
+      "category": "eligibility",
+      "label": "세대 정의: 외국인 직계존·비속",
+      "value": "적용 차원 household_definition; 공고일 현재 가족관계등록부에 등재; 외국인등록 또는 국내거소신고 완료; 신청자 또는 분리배우자의 등본에 기재되어 있거나 등록 체류지·거소가 그 주민등록표 주소와 동일",
+      "page": 9,
+      "source_locator": "p.9 세대 정의: 외국인 직계존·비속"
+    },
+    {
+      "id": "household-exclusion-missing",
+      "category": "eligibility",
+      "label": "세대 제외: 실종선고",
+      "value": "적용 차원 household_definition; 실종선고 절차가 진행 중인 사람; 신청자 본인이 입증서류 제출",
+      "page": 10,
+      "source_locator": "p.10 세대 제외 사유 및 p.9 입증서류 의무"
+    },
+    {
+      "id": "household-exclusion-runaway",
+      "category": "eligibility",
+      "label": "세대 제외: 가출·행방불명",
+      "value": "적용 차원 household_definition; 경찰서 등 행정관청 신고 후 1개월 경과 또는 관할 시장·군수·구청장 등이 가출·행방불명 사실 확인; 신청자 본인이 입증서류 제출",
+      "page": 10,
+      "source_locator": "p.10 세대 제외 사유 및 p.9 입증서류 의무"
+    },
+    {
+      "id": "household-exclusion-separate",
+      "category": "eligibility",
+      "label": "세대 제외: 생계·주거 분리",
+      "value": "적용 차원 household_definition; 국민기초생활 보장법 시행령 제2조 제1항 제1호에 해당하는 사람과 생계 및 주거를 달리한다고 시장·군수·구청장 등이 확인; 신청자 본인이 입증서류 제출",
+      "page": 10,
+      "source_locator": "p.10 세대 제외 사유 및 p.9 입증서류 의무"
+    },
+    {
+      "id": "assets-scope-default",
+      "category": "eligibility",
+      "label": "assets 일반 검증 대상",
+      "value": "자산 검증 대상: 세대구성원 전체; 계층별 예외와 공급유형별 요건을 함께 확인",
+      "page": 12,
+      "source_locator": "p.12 assets 일반 검증 대상"
+    },
+    {
+      "id": "assets-scope-youth",
+      "category": "eligibility",
+      "label": "assets 청년 검증 대상",
+      "value": "자산 검증 대상: 신청자 본인; 다만 세대원이 있는 세대의 세대주인 청년은 세대구성원 전체를 검증",
+      "page": 12,
+      "source_locator": "p.12 assets 청년 검증 대상"
+    },
+    {
+      "id": "assets-scope-engaged",
+      "category": "eligibility",
+      "label": "assets 예비신혼부부 검증 대상",
+      "value": "자산 검증 대상: 혼인으로 구성될 세대 전체; 예비신혼부부에 한함",
+      "page": 12,
+      "source_locator": "p.12 assets 예비신혼부부 검증 대상"
+    },
+    {
+      "id": "assets-elderly",
+      "category": "eligibility",
+      "label": "고령자 assets 검증 대상",
+      "value": "적용 차원 assets; 고령자는 세대구성원 전체를 검증; 혼인 중이 아니며 단독세대주로 입주하려는 경우도 포함",
+      "page": 12,
+      "source_locator": "p.12 고령자 assets 검증 대상"
+    },
+    {
+      "id": "income-scope-default",
+      "category": "eligibility",
+      "label": "income 일반 검증 대상",
+      "value": "소득 검증 대상: 세대구성원 전체; 계층별 예외와 공급유형별 요건을 함께 확인",
+      "page": 14,
+      "source_locator": "p.14 income 일반 검증 대상"
+    },
+    {
+      "id": "income-scope-youth",
+      "category": "eligibility",
+      "label": "income 청년 검증 대상",
+      "value": "소득 검증 대상: 신청자 본인; 다만 세대원이 있는 세대의 세대주인 청년은 세대구성원 전체를 검증",
+      "page": 14,
+      "source_locator": "p.14 income 청년 검증 대상"
+    },
+    {
+      "id": "income-scope-engaged",
+      "category": "eligibility",
+      "label": "income 예비신혼부부 검증 대상",
+      "value": "소득 검증 대상: 혼인으로 구성될 세대 전체; 예비신혼부부에 한함",
+      "page": 14,
+      "source_locator": "p.14 income 예비신혼부부 검증 대상"
+    },
+    {
+      "id": "income-elderly",
+      "category": "eligibility",
+      "label": "고령자 income 검증 대상",
+      "value": "적용 차원 income; 고령자는 세대구성원 전체를 검증; 혼인 중이 아니며 단독세대주로 입주하려는 경우도 포함",
+      "page": 14,
+      "source_locator": "p.14 고령자 income 검증 대상"
+    },
+    {
+      "id": "child-counting",
+      "category": "eligibility",
+      "label": "소득·자산 출산 가산 인정 자녀수",
+      "value": "적용 차원 child_counting; 2023.03.28. 이후 출산한 미성년 자녀(공고일 기준 태아 포함); 기준일 이후 출산 자녀가 있으면 기준일 이전 출생 기존 미성년자녀도 포함; 최대 2자녀까지 인정; 신청자 또는 배우자와 같은 세대별 주민등록표에 등재된 경우에 한함",
+      "page": 12,
+      "source_locator": "p.12 소득·자산 출산 가산 인정 자녀수"
+    },
+    {
+      "id": "asset-limit-0",
+      "category": "eligibility",
+      "label": "자산 한도: 출산 가산 0",
+      "value": "출산 가산 인정 자녀 구간 0; 총자산 345,000,000원 이하; 자동차 45,420,000원 이하; 출산자녀수 인정 규칙과 자산 검증 대상·산정방법을 함께 확인",
+      "page": 11,
+      "source_locator": "p.11 자산 한도: 출산 가산 0"
+    },
+    {
+      "id": "asset-limit-1",
+      "category": "eligibility",
+      "label": "자산 한도: 출산 가산 1",
+      "value": "출산 가산 인정 자녀 구간 1; 총자산 379,000,000원 이하; 자동차 49,960,000원 이하; 출산자녀수 인정 규칙과 자산 검증 대상·산정방법을 함께 확인",
+      "page": 11,
+      "source_locator": "p.11 자산 한도: 출산 가산 1"
+    },
+    {
+      "id": "asset-limit-2plus",
+      "category": "eligibility",
+      "label": "자산 한도: 출산 가산 2+",
+      "value": "출산 가산 인정 자녀 구간 2+; 총자산 413,000,000원 이하; 자동차 54,510,000원 이하; 출산자녀수 인정 규칙과 자산 검증 대상·산정방법을 함께 확인",
+      "page": 11,
+      "source_locator": "p.11 자산 한도: 출산 가산 2+"
+    },
+    {
+      "id": "income-general-1-0",
+      "category": "eligibility",
+      "label": "일반공급 신혼부부·한부모가족 제외 소득 한도 1인 0",
+      "value": "일반공급 신혼부부·한부모가족 제외 계층; 세대원수 1; 출산 가산 인정 자녀 구간 0; 기준 중위소득 170% 이하; 출산자녀수 인정 규칙과 소득 검증 대상·산정방법을 함께 확인",
+      "page": 16,
+      "source_locator": "p.16 일반공급 신혼부부·한부모가족 제외 소득 한도 1인 0"
+    },
+    {
+      "id": "income-general-2-0",
+      "category": "eligibility",
+      "label": "일반공급 신혼부부·한부모가족 제외 소득 한도 2인 0",
+      "value": "일반공급 신혼부부·한부모가족 제외 계층; 세대원수 2; 출산 가산 인정 자녀 구간 0; 기준 중위소득 160% 이하; 출산자녀수 인정 규칙과 소득 검증 대상·산정방법을 함께 확인",
+      "page": 16,
+      "source_locator": "p.16 일반공급 신혼부부·한부모가족 제외 소득 한도 2인 0"
+    },
+    {
+      "id": "income-general-2-1",
+      "category": "eligibility",
+      "label": "일반공급 신혼부부·한부모가족 제외 소득 한도 2인 1",
+      "value": "일반공급 신혼부부·한부모가족 제외 계층; 세대원수 2; 출산 가산 인정 자녀 구간 1; 기준 중위소득 170% 이하; 출산자녀수 인정 규칙과 소득 검증 대상·산정방법을 함께 확인",
+      "page": 16,
+      "source_locator": "p.16 일반공급 신혼부부·한부모가족 제외 소득 한도 2인 1"
+    },
+    {
+      "id": "income-general-3-0",
+      "category": "eligibility",
+      "label": "일반공급 신혼부부·한부모가족 제외 소득 한도 3인 0",
+      "value": "일반공급 신혼부부·한부모가족 제외 계층; 세대원수 3인 이상; 출산 가산 인정 자녀 구간 0; 기준 중위소득 150% 이하; 출산자녀수 인정 규칙과 소득 검증 대상·산정방법을 함께 확인",
+      "page": 16,
+      "source_locator": "p.16 일반공급 신혼부부·한부모가족 제외 소득 한도 3인 0"
+    },
+    {
+      "id": "income-general-3-1",
+      "category": "eligibility",
+      "label": "일반공급 신혼부부·한부모가족 제외 소득 한도 3인 1",
+      "value": "일반공급 신혼부부·한부모가족 제외 계층; 세대원수 3인 이상; 출산 가산 인정 자녀 구간 1; 기준 중위소득 160% 이하; 출산자녀수 인정 규칙과 소득 검증 대상·산정방법을 함께 확인",
+      "page": 16,
+      "source_locator": "p.16 일반공급 신혼부부·한부모가족 제외 소득 한도 3인 1"
+    },
+    {
+      "id": "income-general-3-2plus",
+      "category": "eligibility",
+      "label": "일반공급 신혼부부·한부모가족 제외 소득 한도 3인 2+",
+      "value": "일반공급 신혼부부·한부모가족 제외 계층; 세대원수 3인 이상; 출산 가산 인정 자녀 구간 2+; 기준 중위소득 170% 이하; 출산자녀수 인정 규칙과 소득 검증 대상·산정방법을 함께 확인",
+      "page": 16,
+      "source_locator": "p.16 일반공급 신혼부부·한부모가족 제외 소득 한도 3인 2+"
+    },
+    {
+      "id": "assets-calculation",
+      "category": "eligibility",
+      "label": "자산 산정 시점·자동차 한도 구분",
+      "value": "적용 차원 assets; 총자산에는 해당 세대 보유 자동차 가액 합계를 반영; 별도 자동차 한도는 비영업용 승용자동차 중 가장 높은 가액; 장애인사용 자동차 및 상이등급 1~7급 국가유공자 보철용 차량 제외; 저공해자동차는 정부·지자체 보조금 차감; 금융자산·금융부채는 조사기준일, 다른 자산·부채는 모집공고일 기준이며 공적 시스템 확정 산정시점 예외 있음; 부동산·금융자산·기타자산·부채의 상세 산정 및 제외항목은 추가 검토 필요",
+      "page": 13,
+      "source_locator": "p.13 및 p.12 자산 산정 시점·총자산 자동차 합계·별도 자동차 한도"
+    },
+    {
+      "id": "income-calculation",
+      "category": "eligibility",
+      "label": "소득 산정·세대원수 기준",
+      "value": "적용 차원 income; 세전 월평균소득이며 대상 세대구성원의 소득 합산; 기준 중위소득 대비 비율 사용; 세대원수에는 외국인 배우자와 태아 포함; 모집공고일 기준이며 공적 시스템 확정 산정시점 예외 있음; 공적 소득자료와 12가지 소득항목의 상세 산정은 추가 검토 필요",
+      "page": 14,
+      "source_locator": "p.14 및 p.13 소득 세전 합산·세대원수·산정시점"
+    },
+    {
+      "id": "income-dual-earner",
+      "category": "eligibility",
+      "label": "일반공급 신혼 맞벌이 가산 적용 제한",
+      "value": "적용 차원 income; 맞벌이 소득 우대비율 30%p 가산; 신청자와 배우자 모두 사업소득 또는 근로소득이 있는 경우; 신혼부부·한부모가족 입주자격으로 당첨된 자의 세부 적용 표 확인; 6세 이하 자녀를 둔 한부모가족에는 적용 제외; 14쪽 문구와 16쪽 세부 적용 범위를 함께 확인하며 일반 한부모가족 전체로 확장하지 않음",
+      "page": 16,
+      "source_locator": "p.16 세부 적용 제한 및 p.14 일반공급 맞벌이 정의"
+    },
+    {
+      "id": "category-youth",
+      "category": "eligibility",
+      "label": "일반공급 청년 신청 요건",
+      "value": "적용 차원 supply_category; 무주택자; 18세 이상 39세 이하 (1986.09.18.~2008.09.17. 출생); 혼인 중이 아님; 본인 또는 세대원이 있는 세대주이면 해당 세대의 소득이 기준 중위소득 150% 이하에 해당 가산 적용; 공통 자산요건 및 미성년자 법정대리인 요건도 별도 충족 필요",
+      "page": 17,
+      "source_locator": "p.17 청년 요건 및 p.9 법정대리인, p.11~12·15 공통 자산요건"
+    },
+    {
+      "id": "category-newlywed-alternatives",
+      "category": "eligibility",
+      "label": "신혼부부·한부모가족 대상 대안",
+      "value": "적용 차원 supply_category; (혼인 중; 혼인기간 7년 이내이며 같은 전 배우자와 재혼 시 이전 혼인기간 포함) [또는] (예비신혼부부; 입주 전까지 혼인사실 증명 가능) [또는] (혼인 중; 6세 이하 자녀 (2019.09.18. 이후 출생, 태아 포함) 있음) [또는] (한부모가족; 6세 이하 자녀 (2019.09.18. 이후 출생) 있음; 자녀가 신청자와 동일 세대별 주민등록표에 등재)",
+      "page": 17,
+      "source_locator": "p.17 신혼부부·한부모가족 대상 대안"
+    },
+    {
+      "id": "category-newlywed-common",
+      "category": "eligibility",
+      "label": "신혼부부·한부모가족 공통 신청 요건",
+      "value": "적용 차원 supply_category; 신혼부부·한부모가족 대상 대안 중 하나 충족; 무주택세대구성원이며 예비신혼부부는 혼인으로 구성될 세대 모두 무주택; 해당 세대 소득이 기준 중위소득 150% 이하에 해당 가산 적용; 공통 자산요건 및 해당 대안의 추가 증빙도 별도 충족 필요",
+      "page": 17,
+      "source_locator": "p.17 계층별 요건 및 p.11~12·15 공통 자산요건"
+    },
+    {
+      "id": "category-elderly",
+      "category": "eligibility",
+      "label": "일반공급 고령자 신청 요건",
+      "value": "적용 차원 supply_category; 65세 이상 (1961.09.17. 이전 출생이라는 원문 표기와 연령 기준 함께 확인); 무주택세대구성원이며 혼인 중이 아니며 단독세대주로 입주하려는 사람은 주택소유만 본인 검증; 해당 세대 소득이 기준 중위소득 150% 이하에 해당 가산 적용; 공통 자산요건도 충족 필요",
+      "page": 17,
+      "source_locator": "p.17 계층별 요건 및 p.11~12·15 공통 자산요건"
+    },
+    {
+      "id": "category-general",
+      "category": "eligibility",
+      "label": "일반공급 일반 계층 신청 요건",
+      "value": "적용 차원 supply_category; 무주택세대구성원; 해당 세대 소득이 기준 중위소득 150% 이하에 해당 가산 적용; 공통 자산요건도 충족 필요",
+      "page": 17,
+      "source_locator": "p.17 계층별 요건 및 p.11~12·15 공통 자산요건"
+    },
+    {
+      "id": "category-priority-demolition",
+      "category": "eligibility",
+      "label": "우선공급 철거민 등 지정 대상",
+      "value": "적용 차원 supply_category; 덕수연립 가로주택정비사업 지구 내 기존거주자; 조합이 우선공급 대상으로 선정해 LH에 통보한 지정 대상자; 관련 법의 자격요건 충족 및 별도 안내문 확인; 우선공급 기간에 본인이 별도로 신청; 소득·자산요건을 적용하지 않음; 모집공고일부터 입주까지 무주택세대구성원 유지",
+      "page": 15,
+      "source_locator": "p.15 우선공급 철거민 등 지정 대상"
+    },
+    {
+      "id": "foreign-applicant-restrictions",
+      "category": "eligibility",
+      "label": "외국인 신청자·배우자 관련 제한",
+      "value": "적용 차원 disqualifications; 신청자가 외국인이면 신청 불가; 배우자가 국내 거주하지 않는 재외국민이거나 외국인등록·국내거소신고를 완료하지 않은 외국인이면 그와 혼인한 국민도 신청 불가; 외국인 세대구성원 등록 말소 또는 등록번호 무효 시 부적격 처리될 수 있음",
+      "page": 9,
+      "source_locator": "p.9 외국인 신청자·배우자 관련 제한"
+    }
+  ],
+  "warnings": [
+    "보존 PDF의 일부 규칙만 검토했습니다. 현재 공고 유효성이나 개인 신청 자격을 판정하지 않습니다.",
+    "미성년자 예외는 다른 신청 요건을 면제하지 않습니다. 주택소유 검증 대상 예외를 소득·자산 검증에 적용하지 않습니다.",
+    "소득·자산 적용 대상은 주택소유 대상과 다릅니다. 표본 소득 한도는 신혼부부·한부모가족 제외 계층의 일반공급에 한정됩니다. 철거민 지정 우선공급에는 그 한도를 적용하지 않습니다."
+  ]
+}
