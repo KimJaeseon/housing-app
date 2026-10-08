@@ -9,6 +9,8 @@
 
 ## 1. 구성 및 경계
 
+2026-10-08 P4 후속: `backend/separate_notice.py`의 `capture`는 LH 공개 공지와 첨부를 제한된 URL·용량·리다이렉트 정책으로 읽는다. `load_snapshot`은 `shared/contracts/separate-notice.schema.json`, `backend/separate_notices/` 기록과 `docs/references/`의 공개 본문 추출본·PDF를 결합해 검사한다. `backend/verification_gate.py`의 선택 옵션으로 연결했으며 후보 관계·부분 검토를 유지한다. API/화면에는 아직 연결하지 않았다. [최신 범위·검증 기록](validation/2026-10-08_SEPARATE_NOTICE.md)을 참조한다.
+
 ```mermaid
 flowchart TD
     A[App.tsx 검색·목록·상세] --> B[useSearchApi.ts 요청·폴링·취소]
@@ -196,6 +198,12 @@ to_notice는 목록의 마감 상태와 제목·상태의 취소 표시를 제�
 2026-10-01 두 번째 표본 추가 후 재검사 결과는 서버 140개, 참조 규칙 26개, TypeScript, Expo 웹 빌드 통과다. 오프라인 웹 QA는 36개 화면 상태 자동 접근성 위반 0건, 동작 19개 통과다. 세 번째 강서염창 표본은 실제 LH 목록·상세·PDF 재조회에서 7항목을 반환했다. 이 변경의 검사 결과는 [접수 중 표본 검증 기록](validation/2026-10-01_ACTIVE_NOTICE.md)에 남겼다. VoiceOver·TalkBack 실기 검사는 미실행이다.
 
 ## 8. 알려진 유지보수 제약
+
+현재 내부 자격 Schema는 0.3.0이고 단일 자료는 93규칙·94근거다. `housing_exception`은 주택소유 원칙 부모 및 자산 면제 금지를 검사한다. `family_income_limit`은 가족 유형·맞벌이·자녀 인정 근거를 검사한다. 기존 읽기용 AND/OR 및 자산 산정·증빙 규칙도 확장했다. 실행 경로·개인 평가 비활성은 유지한다. [현재 검증과 상한·남은 범위](validation/2026-10-08_ELIGIBILITY_DETAILS.md)를 따른다.
+
+같은 날 후속 확장에서 내부 자격 Schema는 0.2.0, 규칙은 46개로 갱신됐다. AND/OR 조건, 소득·자산별 범위, 자산·소득 수치 한도 및 출산 인정 근거 연결을 검사한다. 현재 수치 소득표는 일반공급 신혼부부·한부모가족 제외 계층 6행에 한정된다. [현재 검증·남은 범위](validation/2026-10-08_ELIGIBILITY_EXPANSION.md)를 참조한다.
+
+2026-10-08: 자격 모델 첫 범위를 추가했다. `backend/eligibility_conditions.py`의 `load_eligibility`는 `shared/contracts/eligibility-conditions.schema.json` 및 `backend/eligibility_reviews/`에 근거를 둔 `backend/eligibility_conditions/`를 검사한다. CLI는 로컬 PDF 해시도 확인한다. 신규 검사는 `backend/test_eligibility_conditions.py`다. 현재 내부 부분 검토 자료이며 API·앱·개인 적격 판정에는 연결하지 않는다. [검증 기록](validation/2026-10-08_ELIGIBILITY_MODEL.md)을 참조한다.
 
 - 현재 HTML 구조와 JavaScript 변수명에 의존한다. 사이트가 바뀌면 기존 값을 유지하지 않고 실패 또는 검토 필요로 처리한다.
 - 단일 PDF만 선택한다. HWPX 전용·복수 공고문·스캔 문서의 자동 처리는 없다.
