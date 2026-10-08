@@ -23,7 +23,7 @@ class EligibilityTests(unittest.TestCase):
 
     def test_source_bound_partial_model(self):
         record = load_eligibility(CONDITIONS, REVIEW)
-        self.assertEqual(len(record['rules']), 46)
+        self.assertEqual(len(record['rules']), 93)
         self.assertFalse(record['applicant_evaluation'])
         self.assertEqual(record['rules'][1]['exception_of'], 'age-default')
         self.assertEqual(record['rules'][8]['predicate']['scope'], 'future_household')
@@ -89,7 +89,10 @@ class EligibilityTests(unittest.TestCase):
             self.reject(lambda r: r['rules'][index]['predicate']['requirements'].pop(position))
 
     def change_rule(self, record, ident, **fields):
-        next(rule for rule in record['rules'] if rule['id'] == ident)['predicate'].update(fields)
+        self.predicate(record, ident).update(fields)
+
+    def predicate(self, record, ident):
+        return next(rule for rule in record['rules'] if rule['id'] == ident)['predicate']
 
     def test_asset_table_amounts_not_derived_rounding(self):
         self.reject(lambda r: self.change_rule(r, 'asset-limit-1', total_assets_won=379500000))
@@ -120,6 +123,62 @@ class EligibilityTests(unittest.TestCase):
         for ident in ('category-priority-demolition', 'income-dual-earner'):
             index = next(i for i, rule in enumerate(load_eligibility(CONDITIONS, REVIEW)['rules']) if rule['id'] == ident)
             self.reject(lambda r: r['rules'][index]['predicate']['requirements'].pop())
+
+    def test_housing_exceptions_keep_all_eleven_and_asset_independence(self):
+        record = load_eligibility(CONDITIONS, REVIEW)
+        exceptions = [rule for rule in record['rules'] if rule['predicate']['kind'] == 'housing_exception']
+        self.assertEqual(len(exceptions), 11)
+        self.assertTrue(all(rule['exception_of'] == 'housing-default' for rule in exceptions))
+        self.assertTrue(all(rule['predicate']['asset_exemption'] is False for rule in exceptions))
+        self.reject(lambda r: self.change_rule(r, 'housing-exception-01', asset_exemption=True))
+
+    def test_housing_exception_cannot_drop_disposal_deadline_or_region(self):
+        self.reject(lambda r: self.predicate(r, 'housing-exception-01')['requirements'].pop())
+        self.reject(lambda r: self.predicate(r, 'housing-exception-02')['requirements'].pop(0))
+        self.reject(lambda r: self.predicate(r, 'housing-exception-11')['requirements'].pop())
+
+    def test_housing_exception_or_and_parent_cannot_change(self):
+        self.reject(lambda r: self.predicate(r, 'housing-exception-02')['alternatives'].pop())
+        self.reject(lambda r: next(rule for rule in r['rules'] if rule['id'] == 'housing-exception-01').update(exception_of='age-default'))
+        self.reject(lambda r: next(rule for rule in r['rules'] if rule['id'] == 'housing-exception-01').update(exception_of=None))
+
+    def test_family_income_table_preserves_all_seventeen_rows(self):
+        record = load_eligibility(CONDITIONS, REVIEW)
+        rows = [rule['predicate'] for rule in record['rules'] if rule['predicate']['kind'] == 'family_income_limit']
+        self.assertEqual(len(rows), 17)
+        under6 = [row for row in rows if row['applicant_group'] == 'single_parent_under6']
+        self.assertEqual(len(under6), 5)
+        self.assertFalse(any(row['dual_earner_bonus'] for row in under6))
+        dual = self.predicate(record, 'income-family-other-dual-4-2plus')
+        self.assertEqual((dual['percent'], dual['household_size_max']), (200, None))
+        self.assertEqual(self.predicate(record, 'income-family-other-single-3-1')['household_size_max'], 3)
+
+    def test_under6_single_parent_cannot_gain_dual_earner_bonus(self):
+        self.reject(lambda r: self.change_rule(r, 'income-family-under6-single-2-0', dual_earner_bonus=True))
+        self.reject(lambda r: self.change_rule(r, 'income-family-other-dual-2-0', applicant_group='single_parent_under6'))
+
+    def test_family_income_requires_bonus_and_child_evidence(self):
+        self.reject(lambda r: self.change_rule(r, 'income-family-other-dual-4-2plus', bonus_rule_id='child-counting'))
+        self.reject(lambda r: self.change_rule(r, 'income-family-other-dual-4-2plus', counting_rule_id='income-dual-earner'))
+        self.reject(lambda r: self.change_rule(r, 'income-family-other-dual-4-2plus', percent=170))
+        self.reject(lambda r: self.change_rule(r, 'income-family-other-single-3-1', household_size_max=None))
+
+    def test_financial_valuation_and_debt_cap_cannot_disappear(self):
+        self.reject(lambda r: self.predicate(r, 'asset-financial')['requirements'].pop(0))
+        self.reject(lambda r: self.predicate(r, 'asset-debts')['requirements'].pop(4))
+        self.reject(lambda r: self.predicate(r, 'asset-real-estate-exclusions')['alternatives'][3].pop())
+
+    def test_duplicate_application_exception_and_good_reason_preserved(self):
+        self.reject(lambda r: self.predicate(r, 'duty-duplicate-applications')['requirements'].pop(2))
+        self.reject(lambda r: self.predicate(r, 'duty-objections')['requirements'].pop(1))
+
+    def test_engaged_deadline_and_same_partner_requirements_preserved(self):
+        self.reject(lambda r: self.predicate(r, 'duty-engaged-fetus')['requirements'].pop(2))
+        self.reject(lambda r: self.predicate(r, 'duty-engaged-fetus')['requirements'].pop(3))
+
+    def test_public_income_lump_sum_and_illegal_transfer_limit_preserved(self):
+        self.reject(lambda r: self.predicate(r, 'income-agriculture-transfer')['requirements'].pop())
+        self.reject(lambda r: self.predicate(r, 'disqualification-illegal-transfer')['requirements'].pop())
 
     def test_pdf_cli_success_and_changed_bytes(self):
         args = ['--conditions', str(CONDITIONS), '--review', str(REVIEW), '--pdf', str(PDF)]

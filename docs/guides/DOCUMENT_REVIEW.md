@@ -1,6 +1,6 @@
 # 공고문 검토 기록 작성 절차
 
-내부 자격 기록의 현재 Schema는 0.2.0이다. 추가 조건의 모든 AND 요건과 OR 대안을 보존하고, 소득/자산의 검증 대상을 주택소유 대상과 구분한다. 원문 표의 자산 금액을 가산율로 다시 계산해 대체하지 않는다. 수치 한도는 인정 자녀수 규칙에 연결하며 복수 페이지에 근거가 있으면 `source_locator`에 모두 표시한다. [현재 규칙 46개의 검증·미완료 범위](../validation/2026-10-08_ELIGIBILITY_EXPANSION.md)를 참고한다.
+내부 자격 기록의 현재 Schema는 0.3.0이다. 추가 조건의 모든 AND 요건과 OR 대안을 보존하고, 소득/자산의 검증 대상을 주택소유 대상과 구분한다. 원문 표의 자산 금액을 가산율로 다시 계산해 대체하지 않는다. 수치 한도는 인정 자녀수 규칙에 연결하며 복수 페이지에 근거가 있으면 `source_locator`에 모두 표시한다. [현재 규칙 93개의 검증·미완료 범위](../validation/2026-10-08_ELIGIBILITY_DETAILS.md)를 참고한다.
 
 자격 적용 대상·예외의 내부 구조화는 `backend/eligibility_reviews/`(기존 검토 Schema)와 `backend/eligibility_conditions/`(자격 전용 Schema)에 별도로 기록한다. 앱 표시용 기록에 자동 합치지 않는다. 기준일과 규칙별 근거, 성년/무주택 원칙의 예외 부모, 예외의 모든 조건, 미검토 범위를 보존한다. `python -m backend.eligibility_conditions --conditions ... --review ... --pdf ...`로 검사하며 `valid_partial`은 신청 자격 판정이 아니다. [실행 예시와 범위](../validation/2026-10-08_ELIGIBILITY_MODEL.md)를 참고한다.
 

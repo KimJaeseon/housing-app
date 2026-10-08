@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:housing:eligibility-conditions:0.2.0",
+  "$id": "urn:housing:eligibility-conditions:0.3.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -15,7 +15,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.2.0"
+      "const": "0.3.0"
     },
     "official_id": {
       "type": "string",
@@ -374,6 +374,112 @@
                 },
                 "counting_rule_id": {
                   "$ref": "#/$defs/id"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "supply",
+                "applicant_group",
+                "household_size_min",
+                "household_size_max",
+                "children_band",
+                "percent",
+                "counting_rule_id",
+                "dual_earner_bonus",
+                "bonus_rule_id"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "family_income_limit"
+                },
+                "supply": {
+                  "const": "general"
+                },
+                "applicant_group": {
+                  "enum": [
+                    "single_parent_under6",
+                    "newlywed_single_parent_other"
+                  ]
+                },
+                "household_size_min": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "household_size_max": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "children_band": {
+                  "enum": [
+                    "0",
+                    "1",
+                    "2+"
+                  ]
+                },
+                "percent": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300
+                },
+                "counting_rule_id": {
+                  "$ref": "#/$defs/id"
+                },
+                "dual_earner_bonus": {
+                  "type": "boolean"
+                },
+                "bonus_rule_id": {
+                  "$ref": "#/$defs/id"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "requirements",
+                "alternatives",
+                "asset_exemption"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "housing_exception"
+                },
+                "requirements": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                },
+                "alternatives": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "#/$defs/text"
+                    }
+                  }
+                },
+                "asset_exemption": {
+                  "const": false
                 }
               }
             }

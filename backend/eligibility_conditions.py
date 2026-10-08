@@ -23,13 +23,23 @@ def predicate_text(predicate):
         resource = {'income': '소득', 'assets': '자산'}[predicate['resource']]
         scope = {'household': '세대구성원 전체', 'applicant': '신청자 본인', 'future_household': '혼인으로 구성될 세대 전체'}[predicate['scope']]
         return f'{resource} 검증 대상: {scope}; ' + '; '.join(predicate['requirements'])
+    if kind == 'housing_exception':
+        text = '주택소유 인정 예외; ' + '; '.join(predicate['requirements'])
+        if predicate['alternatives']:
+            text += '; 추가 대안 중 하나: ' + ' [또는] '.join('(' + '; '.join(terms) + ')' for terms in predicate['alternatives'])
+        return text + '; 이 예외 자체가 자산가액 면제를 의미하지 않음'
     if kind == 'asset_limits':
         return (f"출산 가산 인정 자녀 구간 {predicate['children_band']}; "
                 f"총자산 {predicate['total_assets_won']:,}원 이하; 자동차 {predicate['car_won']:,}원 이하; "
                 '출산자녀수 인정 규칙과 자산 검증 대상·산정방법을 함께 확인')
-    if kind == 'income_limit':
+    if kind in ('income_limit', 'family_income_limit'):
         size = str(predicate['household_size_min']) if predicate['household_size_max'] == predicate['household_size_min'] else f"{predicate['household_size_min']}인 이상"
-        return (f"일반공급 신혼부부·한부모가족 제외 계층; 세대원수 {size}; 출산 가산 인정 자녀 구간 {predicate['children_band']}; "
+        group = '일반공급 신혼부부·한부모가족 제외 계층'
+        if kind == 'family_income_limit':
+            group = {'single_parent_under6': '일반공급 6세 이하 자녀 한부모가족',
+                     'newlywed_single_parent_other': '일반공급 신혼부부·한부모가족 그 외'}[predicate['applicant_group']]
+            group += '; 신혼 맞벌이 우대 ' + ('적용' if predicate['dual_earner_bonus'] else '미적용')
+        return (f"{group}; 세대원수 {size}; 출산 가산 인정 자녀 구간 {predicate['children_band']}; "
                 f"기준 중위소득 {predicate['percent']}% 이하; 출산자녀수 인정 규칙과 소득 검증 대상·산정방법을 함께 확인")
     raise ValueError('predicate has no canonical wording')
 
@@ -70,26 +80,32 @@ def load_eligibility(path, review_path):
                 raise ValueError('exception requirements absent from evidence')
         elif predicate_text(predicate) != fact['value']:
             raise ValueError('normalized eligibility evidence mismatch')
-        if kind in ('asset_limits', 'income_limit'):
+        if kind in ('asset_limits', 'income_limit', 'family_income_limit'):
             counting = rules.get(predicate['counting_rule_id'])
             if not counting or counting['predicate']['kind'] != 'reviewed_all_of' or counting['predicate']['dimension'] != 'child_counting':
                 raise ValueError('child counting evidence missing')
-        if kind == 'income_limit' and predicate['household_size_max'] not in (None, predicate['household_size_min']):
+        if kind in ('income_limit', 'family_income_limit') and predicate['household_size_max'] not in (None, predicate['household_size_min']):
             raise ValueError('unsupported household size interval')
+        if kind == 'family_income_limit':
+            bonus = rules.get(predicate['bonus_rule_id'])
+            if not bonus or bonus['id'] != 'income-dual-earner' or bonus['predicate']['kind'] != 'reviewed_all_of' or bonus['predicate']['dimension'] != 'income':
+                raise ValueError('family income bonus evidence missing')
+            if predicate['applicant_group'] == 'single_parent_under6' and predicate['dual_earner_bonus']:
+                raise ValueError('single parent dual earner bonus forbidden')
         if kind == 'resource_scope':
             parent = rules.get(rule['exception_of'])
             if rule['exception_of'] is not None and (not parent or parent['predicate']['kind'] != kind or parent['predicate']['resource'] != predicate['resource']):
                 raise ValueError('resource scope parent mismatch')
         parent_id = rule['exception_of']
-        needs_parent = kind == 'manual_exception' or (kind in ('housing_scope', 'resource_scope') and predicate['scope'] != 'household')
+        needs_parent = kind in ('manual_exception', 'housing_exception') or (kind in ('housing_scope', 'resource_scope') and predicate['scope'] != 'household')
         if needs_parent != (parent_id is not None):
             raise ValueError('eligibility root or exception mismatch')
         if parent_id is not None:
             parent = rules.get(parent_id)
             if not parent or parent_id == rule['id'] or parent['exception_of'] is not None:
                 raise ValueError('invalid eligibility exception relation')
-            expected_parent = 'age_minimum' if kind == 'manual_exception' else kind
-            if parent['predicate']['kind'] != expected_parent or (kind in ('housing_scope', 'resource_scope') and parent['predicate']['scope'] != 'household'):
+            expected_parent = {'manual_exception': 'age_minimum', 'housing_exception': 'housing_scope'}.get(kind, kind)
+            if parent['predicate']['kind'] != expected_parent or (kind in ('housing_scope', 'resource_scope', 'housing_exception') and parent['predicate']['scope'] != 'household'):
                 raise ValueError('eligibility exception category mismatch')
     return record
 
