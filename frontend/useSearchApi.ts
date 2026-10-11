@@ -115,7 +115,21 @@ export function useSearchApi(){
    throw new Error('timeout');
   }finally{clearTimeout(timer);signal.removeEventListener('abort',cancel);}
  },[]);
- return {start,cancel,stop,status,busy,job,loadSupply,loadDocument};
+ const loadVerification=useCallback(async(noticeId:string,signal:AbortSignal):Promise<VerificationResult>=>{
+  const current=active.current,g=generation.current;if(!current)throw new Error('stale');
+  const path='/v1/search-jobs/'+encodeURIComponent(current.id)+'/notices/'+encodeURIComponent(noticeId)+'/verification';
+  const r=await fetch(base+path,{signal,headers:{'X-Session-Token':session.current}});
+  if(!r.ok)throw new Error('request');const result=await r.json();
+  if(g!==generation.current||active.current?.id!==current.id)throw new Error('stale');
+  if(!validVerification(result,current.id,noticeId))throw new Error('shape');
+  return result;
+ },[]);
+ return {start,cancel,stop,status,busy,job,loadSupply,loadDocument,loadVerification};
+}
+
+export type VerificationResult={job_id:string;notice_id:string;checked_at:string;status:'needs_review';eligible_for_promotion:false;applicant_evaluation:false;official_id:string|null;validated_rule_count:number;live_document_bound:boolean;reasons:{code:string;dimension:string|null}[]};
+function validVerification(x:any,jobId:string,noticeId:string):x is VerificationResult{
+ return x&&x.job_id===jobId&&x.notice_id===noticeId&&(x.official_id===null||typeof x.official_id==='string'&&x.official_id.length>0)&&x.status==='needs_review'&&x.eligible_for_promotion===false&&x.applicant_evaluation===false&&typeof x.checked_at==='string'&&Number.isFinite(Date.parse(x.checked_at))&&Number.isInteger(x.validated_rule_count)&&x.validated_rule_count>=0&&x.validated_rule_count<=100&&typeof x.live_document_bound==='boolean'&&Array.isArray(x.reasons)&&x.reasons.length>0&&x.reasons.length<=50&&x.reasons.every((r:any)=>r&&typeof r.code==='string'&&r.code.length<=100&&(r.dimension===null||typeof r.dimension==='string'));
 }
 
 export type SupplyFact={state:string;value:string|number|boolean|null;unit:string|null;reason:string|null;evidence_ids:string[]};

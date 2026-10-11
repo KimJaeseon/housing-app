@@ -1,11 +1,11 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {AccessibilityInfo,Linking,Platform,Pressable,StyleSheet,Text,View} from 'react-native';
-import {Collection,Notice,SupplyResult,SupplyFact,DocumentResult} from './useSearchApi';
+import {Collection,Notice,SupplyResult,SupplyFact,DocumentResult,VerificationResult} from './useSearchApi';
 const s=StyleSheet.create({panel:{backgroundColor:'#FFFFFF',borderWidth:1,borderColor:'#C7D4CC',borderRadius:20,padding:20,gap:14},title:{fontSize:21,lineHeight:30,fontWeight:'700',color:'#142F2A'},body:{fontSize:17,lineHeight:27,color:'#34483F'},button:{minHeight:52,padding:14,backgroundColor:'#EEF4EE',borderColor:'#17664F',borderWidth:2,borderRadius:12,justifyContent:'center'},buttonText:{fontSize:17,lineHeight:26,fontWeight:'600',color:'#142F2A'},error:{fontSize:17,lineHeight:27,color:'#9A2525'}});
 export function LiveButton({label,onPress,buttonRef}:any){return <Pressable ref={buttonRef} accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={({focused}:any)=>[s.button,focused&&{borderWidth:3,borderColor:'#142F2A'}]}><Text style={s.buttonText}>{label}</Text></Pressable>;}
 export function ScopeSummary({collection:c}:{collection:Collection}){return <View style={s.panel}><Text accessibilityRole="header" style={s.title}>이번 조회 범위</Text><Text style={s.body}>LH · 서울특별시 · {c.housing_type}</Text><Text style={s.body}>게시일 조회 기간: {c.posted_filter} ~ {c.closing_filter}. 이 기간 밖의 공고는 조사하지 않았습니다.</Text><Text style={s.body}>목록 {c.pages_fetched}페이지, {c.rows_fetched}건 확인. {c.list_complete?'반환된 총건수까지 조회했습니다.':'페이지 제한 또는 오류로 목록 일부만 조회했습니다.'}</Text><Text style={s.body}>{c.date_filter_verified?'요청한 게시일 기간이 응답에 반영됐습니다.':'조회 기간의 적용을 확인하지 못했습니다.'} 원문 검증은 남아 있습니다. 확인된 공고가 0건이어도 서울에 모집 공고가 없다는 의미는 아닙니다.</Text>{c.scope_mismatch_count>0&&<Text style={s.body}>지역·유형이 다른 응답 {c.scope_mismatch_count}건을 보류했습니다.</Text>}</View>;}
 export function NoticeCard({notice:n,onOpen,buttonRef,excluded=false}:{notice:Notice;onOpen:()=>void;buttonRef:any;excluded?:boolean}){return <View style={s.panel}><Text accessibilityRole="header" style={s.title}>{n.title}</Text><Text style={s.body}>서울특별시 · {n.housing_type}</Text><Text style={s.body}>{excluded?'검색 대상에서 제외됨 · 마감 또는 취소':'확인 필요 · 신청 가능 여부 미확인'}</Text><Text style={s.body}>LH 목록 표시: {n.listing?.status||'미확인'}</Text><Text style={s.body}>접수 일정·금액·자격: 원문 확인 필요</Text><LiveButton buttonRef={buttonRef} label={`${n.title} 상세 보기`} onPress={onOpen}/></View>;}
-export function NoticeDetail({notice:n,loadSupply,loadDocument}:{notice:Notice;loadSupply:(id:string,signal:AbortSignal)=>Promise<SupplyResult>;loadDocument:(id:string,signal:AbortSignal)=>Promise<DocumentResult>}){
+export function NoticeDetail({notice:n,loadSupply,loadDocument,loadVerification}:{notice:Notice;loadSupply:(id:string,signal:AbortSignal)=>Promise<SupplyResult>;loadDocument:(id:string,signal:AbortSignal)=>Promise<DocumentResult>;loadVerification:(id:string,signal:AbortSignal)=>Promise<VerificationResult>}){
  const [linkError,setLinkError]=useState('');const url=n.listing?.official_url;
  const safe=(()=>{if(!url)return false;try{const parsed=new URL(url);if(parsed.origin!=='https://apply.lh.or.kr'||parsed.hash||parsed.username||parsed.password)return false;
  const keys=Array.from(parsed.searchParams.keys());if(new Set(keys).size!==keys.length)return false;
@@ -23,8 +23,40 @@ export function NoticeDetail({notice:n,loadSupply,loadDocument}:{notice:Notice;l
  <Text accessibilityRole="header" style={s.title}>확인이 필요한 이유</Text>{n.review_reasons.map((reason,index)=><Text key={index} style={s.body}>{reason}</Text>)}
  {safe?<LiveButton label="LH 공식 원문 열기 · 외부 브라우저로 이동" onPress={()=>void open()}/>:<Text style={s.body}>안전한 공식 원문 링크를 확인하지 못했습니다.</Text>}
  <DocumentPanel noticeId={n.id} loadDocument={loadDocument}/>
+ <VerificationPanel noticeId={n.id} loadVerification={loadVerification}/>
  <SupplyPanel noticeId={n.id} loadSupply={loadSupply}/>
  {!!linkError&&<Text accessibilityRole="alert" style={s.error}>{linkError}</Text>}
+ </View>;
+}
+
+const verificationReasons:Record<string,string>={
+ ARTIFACT_UNSUPPORTED:'이 공고의 자격 검토 기록이 아직 없습니다.',
+ ARTIFACT_INVALID:'보존 공고문 또는 검토 기록의 무결성을 확인하지 못했습니다.',
+ PARTIAL_COVERAGE:'자격 조건 전체를 아직 검토하지 않았습니다.',
+ EXTERNAL_LEGAL_EVIDENCE_PENDING:'적용 법령과 별표의 세부 조건 대조가 남아 있습니다.',
+ SEPARATE_NOTICES_PENDING:'별도 공지의 전체 범위와 변경 관계 확인이 남아 있습니다.',
+ SEPARATE_NOTICE_RELATION_UNCONFIRMED:'확인된 청약접수결과 공지와 이 모집공고 번호의 직접 연결이 확인되지 않았습니다.',
+ SEPARATE_NOTICE_ARTIFACT_INVALID:'별도 공지 보존 자료를 확인하지 못했습니다.',
+ SOURCE_CONFLICT_REVIEW_PENDING:'원문 간 표현 차이와 누락된 표의 검토가 남아 있습니다.',
+ LIVE_DOCUMENT_BINDING_PENDING:'이번 조회에서 공고문과 검토 기록의 일치를 확인하지 못했습니다. 위 공고문 항목 확인을 먼저 실행해 주세요.',
+ PRODUCTION_VERIFIER_PENDING:'전체 근거를 종합해 확인 완료로 판정하는 기능이 아직 준비되지 않았습니다.'};
+const dimensionNames:Record<string,string>={income:'소득',assets:'자산',household_definition:'세대 정의',housing_ownership_exceptions:'주택소유 인정 예외',supply_category:'공급 계층',disqualifications:'결격 사유',latest_changes:'최신 변경 공지'};
+function VerificationPanel({noticeId,loadVerification}:{noticeId:string;loadVerification:(id:string,signal:AbortSignal)=>Promise<VerificationResult>}){
+ const [result,setResult]=useState<VerificationResult|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const active=useRef<AbortController|null>(null);
+ useEffect(()=>()=>active.current?.abort(),[]);
+ async function load(){if(active.current)return;const abort=new AbortController();active.current=abort;setBusy(true);setError('');
+  try{const value=await loadVerification(noticeId,abort.signal);if(!abort.signal.aborted)setResult(value);}
+  catch{if(!abort.signal.aborted)setError('검증 사유를 확인하지 못했습니다. 다시 시도해 주세요.');}
+  finally{if(!abort.signal.aborted){setBusy(false);active.current=null;}}
+ }
+ return <View style={{gap:14}}><Text accessibilityRole="header" style={s.title}>자격 검증 진행 상태</Text>
+  <Text style={s.body}>신청 자격 판정은 제공하지 않습니다. 근거 검토의 남은 항목을 확인합니다.</Text>
+  <LiveButton label={busy?'검증 사유 조회 중':'검증 사유 확인'} onPress={()=>void load()}/>
+  <Text accessibilityLiveRegion="polite" style={s.body}>{busy?'검증 사유 조회 중':error||(result?'확인 필요 · 전체 자격 검증 전':'')}</Text>
+  {result&&<><Text style={s.body}>원문 일치: {result.live_document_bound?'이번 조회에서 확인됨':'미확인'} · 검토 규칙 {result.validated_rule_count}개</Text>
+   {result.reasons.map((r,i)=><Text key={i} style={s.body}>• {r.code==='DIMENSION_INCOMPLETE'?`${dimensionNames[r.dimension||'']||r.dimension||'기타'} 검토 미완료`:verificationReasons[r.code]||'추가 검토가 필요합니다.'}</Text>)}
+   <Text style={s.body}>확인 시점: {new Date(result.checked_at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} (한국 시간)</Text></>}
  </View>;
 }
 

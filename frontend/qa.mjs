@@ -20,6 +20,13 @@ await page.getByRole('button',{name:'확인 필요 공고 1건',exact:true}).cli
 await scan('list-review');
 await page.getByRole('button',{name:'합성 확인 필요 행복주택 상세 보기',exact:true}).click();
 await scan('list-detail');
+const verificationFixture={job_id:'synthetic-list-review',notice_id:'LH-10001-10-03',official_id:'10001',checked_at:'2026-10-12T00:00:00Z',status:'needs_review',eligible_for_promotion:false,applicant_evaluation:false,validated_rule_count:0,live_document_bound:false,reasons:[{code:'ARTIFACT_UNSUPPORTED',dimension:null}]};
+await page.route('**/v1/search-jobs/*/notices/*/verification',r=>r.fulfill({json:verificationFixture}));
+await page.getByRole('button',{name:'검증 사유 확인'}).click();
+await page.getByText('이 공고의 자격 검토 기록이 아직 없습니다.',{exact:false}).waitFor();
+checks.push({name:'verification-never-promoted',passed:await page.getByText('확인 필요 · 전체 자격 검증 전',{exact:true}).count()===1});
+await scan('verification-needs-review');
+await page.unroute('**/v1/search-jobs/*/notices/*/verification');
 // Supply states use synthetic fixtures; never spend live API calls in this suite.
 const supplyFixture=JSON.parse(fs.readFileSync('fixtures/supply.json','utf8'));
 let supplyMode='available',supplyCalls=0;

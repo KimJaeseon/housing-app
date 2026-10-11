@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from copy import deepcopy
 from datetime import datetime,timezone
 from hashlib import sha256
+from pathlib import Path
 from threading import RLock,BoundedSemaphore
 from uuid import uuid4
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,7 +15,41 @@ from backend.lh_document import fetch_document, empty_document
 from backend.lh_supply import fetch_supply
 from backend.lh_adapter import collect
 from backend.lh_list import collect_list
+from backend.verification_gate import assess
+from backend.document_review import load_review
 import os
+
+ROOT=Path(__file__).resolve().parents[1]
+GANGSEO_ID='2015122300020807'
+GANGSEO_LIST_ID=f'LH-{GANGSEO_ID}-48-03'
+
+def verification_result(notice_id, official_id, document):
+    """Explain evidence readiness; this endpoint never evaluates an applicant."""
+    result={'status':'needs_review','eligible_for_promotion':False,
+            'applicant_evaluation':False,'official_id':official_id,
+            'validated_rule_count':0,'reasons':[],'live_document_bound':False}
+    if notice_id!=GANGSEO_LIST_ID or official_id!=GANGSEO_ID:
+        result['reasons'].append({'code':'ARTIFACT_UNSUPPORTED','dimension':None})
+        return result
+    review=ROOT/'backend/eligibility_reviews'/f'{GANGSEO_ID}.json'
+    result=assess(ROOT/'backend/eligibility_conditions'/f'{GANGSEO_ID}.json',
+                  review,ROOT/'docs/references'/f'lh-notice-{GANGSEO_ID}.pdf',
+                  ROOT/'backend/separate_notices/9102835612.json',
+                  ROOT/'docs/references')
+    result['live_document_bound']=False
+    if result['validated_rule_count']:
+        try:
+            source=load_review(review)['source']
+            bound=(document is not None and document.get('status')=='partial'
+                   and document.get('reviewed') is True
+                   and document.get('current_id')==source['current_id']
+                   and document.get('original_id')==source['original_id']
+                   and document.get('sha256')==source['pdf_sha256'])
+        except (OSError,ValueError,TypeError,KeyError):bound=False
+        if bound:
+            result['live_document_bound']=True
+            result['reasons']=[r for r in result['reasons'] if r['code']!='LIVE_DOCUMENT_BINDING_PENDING']
+    return result
 
 class Search(BaseModel):
     model_config=ConfigDict(extra='forbid')
@@ -162,6 +197,12 @@ def create_app(collector=collect,executor=None,supplier=fetch_supply,documenter=
             supply_notice(ident,notice_id,x_session_token)
             if (ident,notice_id) not in documents:raise HTTPException(404,'DOCUMENT_NOT_REQUESTED')
             return deepcopy(documents[(ident,notice_id)])
+    @app.get('/v1/search-jobs/{ident}/notices/{notice_id}/verification')
+    def verification_get(ident:str,notice_id:str,x_session_token:str=Header(default='')):
+        with lock:
+            notice=supply_notice(ident,notice_id,x_session_token)
+            document=deepcopy(documents.get((ident,notice_id)))
+        return dict(verification_result(notice_id,notice['official_id'],document),job_id=ident,notice_id=notice_id,checked_at=now())
     return app
 app=create_app()
 
