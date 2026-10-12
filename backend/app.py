@@ -35,7 +35,8 @@ def verification_result(notice_id, official_id, document):
     result=assess(ROOT/'backend/eligibility_conditions'/f'{GANGSEO_ID}.json',
                   review,ROOT/'docs/references'/f'lh-notice-{GANGSEO_ID}.pdf',
                   ROOT/'backend/separate_notices/9102835612.json',
-                  ROOT/'docs/references')
+                  ROOT/'docs/references',
+                  ROOT/'backend/reviewed_tables'/f'{GANGSEO_ID}.json')
     result['live_document_bound']=False
     if result['validated_rule_count']:
         try:

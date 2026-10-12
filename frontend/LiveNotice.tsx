@@ -37,6 +37,7 @@ const verificationReasons:Record<string,string>={
  SEPARATE_NOTICES_PENDING:'별도 공지의 전체 범위와 변경 관계 확인이 남아 있습니다.',
  SEPARATE_NOTICE_RELATION_UNCONFIRMED:'확인된 청약접수결과 공지와 이 모집공고 번호의 직접 연결이 확인되지 않았습니다.',
  SEPARATE_NOTICE_ARTIFACT_INVALID:'별도 공지 보존 자료를 확인하지 못했습니다.',
+ REVIEWED_TABLES_ARTIFACT_INVALID:'소득 금액표 또는 갱신 조건의 보존 검토 자료를 확인하지 못했습니다.',
  SOURCE_CONFLICT_REVIEW_PENDING:'원문 간 표현 차이와 누락된 표의 검토가 남아 있습니다.',
  LIVE_DOCUMENT_BINDING_PENDING:'이번 조회에서 공고문과 검토 기록의 일치를 확인하지 못했습니다. 위 공고문 항목 확인을 먼저 실행해 주세요.',
  PRODUCTION_VERIFIER_PENDING:'전체 근거를 종합해 확인 완료로 판정하는 기능이 아직 준비되지 않았습니다.'};
@@ -55,6 +56,7 @@ function VerificationPanel({noticeId,loadVerification}:{noticeId:string;loadVeri
   <LiveButton label={busy?'검증 사유 조회 중':'검증 사유 확인'} onPress={()=>void load()}/>
   <Text accessibilityLiveRegion="polite" style={s.body}>{busy?'검증 사유 조회 중':error||(result?'확인 필요 · 전체 자격 검증 전':'')}</Text>
   {result&&<><Text style={s.body}>원문 일치: {result.live_document_bound?'이번 조회에서 확인됨':'미확인'} · 검토 규칙 {result.validated_rule_count}개</Text>
+   {result.reviewed_tables?.status==='valid_partial'&&<Text style={s.body}>별도 표 검토: 2026년 월 소득 금액 {result.reviewed_tables.income_amount_count}칸, 갱신 조건 {result.reviewed_tables.renewal_page_count}쪽. 실제 자격·갱신 금액 판정은 제공하지 않습니다.</Text>}
    {result.reasons.map((r,i)=><Text key={i} style={s.body}>• {r.code==='DIMENSION_INCOMPLETE'?`${dimensionNames[r.dimension||'']||r.dimension||'기타'} 검토 미완료`:verificationReasons[r.code]||'추가 검토가 필요합니다.'}</Text>)}
    <Text style={s.body}>확인 시점: {new Date(result.checked_at).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'})} (한국 시간)</Text></>}
  </View>;

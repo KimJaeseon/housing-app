@@ -1,0 +1,283 @@
+{
+  "schema_version": "0.1.0",
+  "official_id": "2015122300020807",
+  "source_pdf_sha256": "ecf4a3f2da9a75976de662566050b04e2bfcd58c34a18a2bef3cfc61ab76c252",
+  "reviewed_at": "2026-10-12",
+  "review_method": "pdf_text_table_extraction_and_visual_page_review",
+  "coverage": "partial",
+  "applicant_evaluation": false,
+  "income_amounts": {
+    "page": 14,
+    "year": 2026,
+    "unit": "won_per_month",
+    "threshold_percent": [
+      30,
+      50,
+      70,
+      100,
+      110,
+      120,
+      130,
+      150,
+      160,
+      170,
+      180,
+      190,
+      200
+    ],
+    "household_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "amounts_won": [
+      [
+        769271,
+        1282119,
+        1794967,
+        2564238,
+        2820662,
+        3077086,
+        3333509,
+        3846357,
+        4102781,
+        4359205,
+        4615628,
+        4872052,
+        5128476
+      ],
+      [
+        1259788,
+        2099646,
+        2939504,
+        4199292,
+        4619221,
+        5039150,
+        5459080,
+        6298938,
+        6718867,
+        7138796,
+        7558726,
+        7978655,
+        8398584
+      ],
+      [
+        1607711,
+        2679518,
+        3751325,
+        5359036,
+        5894940,
+        6430843,
+        6966747,
+        8038554,
+        8574458,
+        9110361,
+        9646265,
+        10182168,
+        10718072
+      ],
+      [
+        1948421,
+        3247369,
+        4546317,
+        6494738,
+        7144212,
+        7793686,
+        8443159,
+        9742107,
+        10391581,
+        11041055,
+        11690528,
+        12340002,
+        12989476
+      ],
+      [
+        2267016,
+        3778360,
+        5289703,
+        7556719,
+        8312391,
+        9068063,
+        9823735,
+        11335079,
+        12090750,
+        12846422,
+        13602094,
+        14357766,
+        15113438
+      ],
+      [
+        2566786,
+        4277976,
+        5989166,
+        8555952,
+        9411547,
+        10267142,
+        11122738,
+        12833928,
+        13689523,
+        14545118,
+        15400714,
+        16256309,
+        17111904
+      ],
+      [
+        2854545,
+        4757575,
+        6660605,
+        9515150,
+        10466665,
+        11418180,
+        12369695,
+        14272725,
+        15224240,
+        16175755,
+        17127270,
+        18078785,
+        19030300
+      ],
+      [
+        3142304,
+        5237174,
+        7332044,
+        10474348,
+        11521783,
+        12569218,
+        13616652,
+        15711522,
+        16758957,
+        17806392,
+        18853826,
+        19901261,
+        20948696
+      ]
+    ],
+    "over_eight_increment_at_100_percent_won": 959198,
+    "scope_note": "공고문 p.14의 가구원수별 기준 중위소득 원 금액표. 계층별 허용 비율 및 소득 검증 대상은 별도 조건."
+  },
+  "renewal": {
+    "pages": [
+      28,
+      29,
+      30,
+      31
+    ],
+    "scope": "renewal_only",
+    "base": {
+      "page": 28,
+      "maximum_increase_percent": 5,
+      "income_band_coefficients_percent": [
+        35,
+        40,
+        50,
+        65,
+        80,
+        90
+      ],
+      "deposit_share_percent": 35,
+      "monthly_rent_share_percent": 65,
+      "market_conversion_rate": "renewal_time_local_rate",
+      "note": "갱신시점 임대시세와 소득구간계수·시장전환율 적용. 갱신계약 시점 법령 및 LH 결정 인상률에 따라 변경 가능."
+    },
+    "income_surcharge": {
+      "pages": [
+        29,
+        30
+      ],
+      "baseline_median_percent": 150,
+      "over_baseline_percentage_points": [
+        10,
+        30,
+        null
+      ],
+      "first_renewal_percent": [
+        105,
+        110,
+        115
+      ],
+      "later_renewal_percent": [
+        110,
+        120,
+        130
+      ],
+      "waiting_list_highest_band_extra_points_first": 10,
+      "waiting_list_highest_band_extra_points_second": 20,
+      "waiting_list_highest_band_extra_points_later_each": 10
+    },
+    "asset_surcharge": {
+      "page": 30,
+      "base_percent": 130,
+      "waiting_list_extra_points_first": 10,
+      "waiting_list_extra_points_later_each": 10
+    },
+    "tenure_surcharge": {
+      "page": 30,
+      "maximum_years": 30,
+      "first_renewal_percent": 110,
+      "later_renewal_percent": 120
+    },
+    "overlap": {
+      "page": 30,
+      "rule": "highest_rate_only"
+    },
+    "exceptions": {
+      "pages": [
+        30,
+        31
+      ],
+      "priority_supply_excludes": [
+        "income_surcharge",
+        "asset_surcharge"
+      ],
+      "income_no_surcharge_upper_percent": [
+        {
+          "group": "newlywed_dual_income",
+          "household_size": "3_plus",
+          "percent": 180
+        },
+        {
+          "group": "newlywed_dual_income",
+          "household_size": "2",
+          "percent": 190
+        },
+        {
+          "group": "other",
+          "household_size": "1",
+          "percent": 170
+        },
+        {
+          "group": "other",
+          "household_size": "2",
+          "percent": 160
+        }
+      ],
+      "child_addition_percentage_points": {
+        "one": 10,
+        "two_plus": 20
+      },
+      "asset_no_surcharge_caps": [
+        {
+          "children": "0",
+          "total_assets_won": 345000000,
+          "car_won": 45420000
+        },
+        {
+          "children": "1",
+          "total_assets_won": 379000000,
+          "car_won": 49960000
+        },
+        {
+          "children": "2_plus",
+          "total_assets_won": 413000000,
+          "car_won": 54510000
+        }
+      ],
+      "note": "면제·가산은 원문의 공급유형·자녀 인정 범위와 갱신 시점 법령 확인이 필요함."
+    }
+  }
+}

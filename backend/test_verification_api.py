@@ -76,4 +76,5 @@ class VerificationApiTests(unittest.TestCase):
         response=c.get(f'/v1/search-jobs/{ident}/notices/{GANGSEO_LIST_ID}/verification',headers=headers)
         self.assertEqual(response.status_code,200)
         self.assertEqual(response.json()['validated_rule_count'],93)
+        self.assertEqual(response.json()['reviewed_tables']['income_amount_count'],104)
         self.assertFalse(response.json()['eligible_for_promotion'])

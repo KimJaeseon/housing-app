@@ -5,9 +5,11 @@ import json
 from backend.document_review import validate_pdf
 from backend.eligibility_conditions import load_eligibility
 from backend.separate_notice import load_snapshot
+from backend.reviewed_tables import load_reviewed_tables
 
 
-def assess(conditions_path, review_path, pdf_path, separate_notice_path=None, artifact_dir=None):
+def assess(conditions_path, review_path, pdf_path, separate_notice_path=None, artifact_dir=None,
+           reviewed_tables_path=None):
     """Validate actual artifacts before reporting partial evidence coverage.
 
     No caller-supplied completion flags are accepted. External source adapters and
@@ -42,6 +44,16 @@ def assess(conditions_path, review_path, pdf_path, separate_notice_path=None, ar
         except (OSError, ValueError, TypeError, KeyError):
             result['separate_notice'] = {'status': 'invalid', 'bulletin_id': None, 'attachment_count': 0}
             reasons.append({'code': 'SEPARATE_NOTICE_ARTIFACT_INVALID', 'dimension': None})
+    if reviewed_tables_path is not None:
+        try:
+            tables = load_reviewed_tables(reviewed_tables_path, pdf_path, review_path)
+            result['reviewed_tables'] = {'status': 'valid_partial',
+                                         'income_amount_count': sum(len(row) for row in tables['income_amounts']['amounts_won']),
+                                         'renewal_page_count': len(tables['renewal']['pages'])}
+        except (OSError, ValueError, TypeError, KeyError):
+            result['reviewed_tables'] = {'status': 'invalid', 'income_amount_count': 0,
+                                         'renewal_page_count': 0}
+            reasons.append({'code': 'REVIEWED_TABLES_ARTIFACT_INVALID', 'dimension': None})
     return result
 
 
@@ -51,13 +63,16 @@ def main(argv=None):
         parser.add_argument('--' + name, required=True)
     parser.add_argument('--separate-notice')
     parser.add_argument('--artifact-dir')
+    parser.add_argument('--reviewed-tables')
     args = parser.parse_args(argv)
     if bool(args.separate_notice) != bool(args.artifact_dir):
         parser.error('--separate-notice and --artifact-dir must be provided together')
-    result = assess(args.conditions, args.review, args.pdf, args.separate_notice, args.artifact_dir)
+    result = assess(args.conditions, args.review, args.pdf, args.separate_notice, args.artifact_dir,
+                    args.reviewed_tables)
     print(json.dumps(result, ensure_ascii=False))
     # Exit 1 means valid but incomplete; 2 means invalid input. Never exit 0 yet.
-    return 2 if any(r['code'] in ('ARTIFACT_INVALID', 'SEPARATE_NOTICE_ARTIFACT_INVALID')
+    return 2 if any(r['code'] in ('ARTIFACT_INVALID', 'SEPARATE_NOTICE_ARTIFACT_INVALID',
+                                 'REVIEWED_TABLES_ARTIFACT_INVALID')
                     for r in result['reasons']) else 1
 
 

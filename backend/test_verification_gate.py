@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONDITIONS = ROOT / 'backend/eligibility_conditions/2015122300020807.json'
 REVIEW = ROOT / 'backend/eligibility_reviews/2015122300020807.json'
 PDF = ROOT / 'docs/references/lh-notice-2015122300020807.pdf'
+TABLES = ROOT / 'backend/reviewed_tables/2015122300020807.json'
 
 
 class VerificationGateTests(unittest.TestCase):
@@ -31,6 +32,20 @@ class VerificationGateTests(unittest.TestCase):
             result = assess(CONDITIONS, REVIEW, path)
         self.assertEqual(result['validated_rule_count'], 0)
         self.assertEqual(result['reasons'][0]['code'], 'ARTIFACT_INVALID')
+
+    def test_reviewed_tables_add_partial_evidence_without_promotion(self):
+        result = assess(CONDITIONS, REVIEW, PDF, reviewed_tables_path=TABLES)
+        self.assertEqual(result['reviewed_tables'], {'status': 'valid_partial',
+                                                   'income_amount_count': 104,
+                                                   'renewal_page_count': 4})
+        self.assertEqual(result['status'], 'needs_review')
+        self.assertFalse(result['eligible_for_promotion'])
+        self.assertIn('EXTERNAL_LEGAL_EVIDENCE_PENDING', [r['code'] for r in result['reasons']])
+
+    def test_missing_reviewed_tables_is_explicit(self):
+        result = assess(CONDITIONS, REVIEW, PDF, reviewed_tables_path=TABLES.with_name('missing.json'))
+        self.assertEqual(result['reviewed_tables']['status'], 'invalid')
+        self.assertIn('REVIEWED_TABLES_ARTIFACT_INVALID', [r['code'] for r in result['reasons']])
 
     def test_fabricated_full_coverage_is_invalid(self):
         record = json.loads(CONDITIONS.read_text(encoding='utf-8'))
