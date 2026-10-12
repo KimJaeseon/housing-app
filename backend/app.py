@@ -36,7 +36,8 @@ def verification_result(notice_id, official_id, document):
                   review,ROOT/'docs/references'/f'lh-notice-{GANGSEO_ID}.pdf',
                   ROOT/'backend/separate_notices/9102835612.json',
                   ROOT/'docs/references',
-                  ROOT/'backend/reviewed_tables'/f'{GANGSEO_ID}.json')
+                  ROOT/'backend/reviewed_tables'/f'{GANGSEO_ID}.json',
+                  ROOT/'backend/external_legal'/f'{GANGSEO_ID}.json')
     result['live_document_bound']=False
     if result['validated_rule_count']:
         try:

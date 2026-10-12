@@ -77,4 +77,6 @@ class VerificationApiTests(unittest.TestCase):
         self.assertEqual(response.status_code,200)
         self.assertEqual(response.json()['validated_rule_count'],93)
         self.assertEqual(response.json()['reviewed_tables']['income_amount_count'],104)
+        self.assertEqual(response.json()['external_legal']['source_count'],2)
+        self.assertEqual(response.json()['external_legal']['status'],'valid_partial')
         self.assertFalse(response.json()['eligible_for_promotion'])

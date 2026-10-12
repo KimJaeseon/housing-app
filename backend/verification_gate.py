@@ -4,12 +4,13 @@ import json
 
 from backend.document_review import validate_pdf
 from backend.eligibility_conditions import load_eligibility
+from backend.external_legal import load_external_legal
 from backend.separate_notice import load_snapshot
 from backend.reviewed_tables import load_reviewed_tables
 
 
 def assess(conditions_path, review_path, pdf_path, separate_notice_path=None, artifact_dir=None,
-           reviewed_tables_path=None):
+           reviewed_tables_path=None, external_legal_path=None):
     """Validate actual artifacts before reporting partial evidence coverage.
 
     No caller-supplied completion flags are accepted. External source adapters and
@@ -54,6 +55,19 @@ def assess(conditions_path, review_path, pdf_path, separate_notice_path=None, ar
             result['reviewed_tables'] = {'status': 'invalid', 'income_amount_count': 0,
                                          'renewal_page_count': 0}
             reasons.append({'code': 'REVIEWED_TABLES_ARTIFACT_INVALID', 'dimension': None})
+    if external_legal_path is not None:
+        try:
+            if artifact_dir is None:
+                raise ValueError('missing artifact directory')
+            legal = load_external_legal(external_legal_path, artifact_dir, record['official_id'])
+            result['external_legal'] = {'status': 'valid_partial',
+                                        'source_count': len(legal['sources']),
+                                        'aligned_check_count': sum(value == 'aligned' for value in legal['checks'].values()),
+                                        'unresolved_check_count': sum(value == 'unresolved' for value in legal['checks'].values())}
+        except (OSError, ValueError, TypeError, KeyError):
+            result['external_legal'] = {'status': 'invalid', 'source_count': 0,
+                                        'aligned_check_count': 0, 'unresolved_check_count': 0}
+            reasons.append({'code': 'EXTERNAL_LEGAL_ARTIFACT_INVALID', 'dimension': None})
     return result
 
 
@@ -64,15 +78,16 @@ def main(argv=None):
     parser.add_argument('--separate-notice')
     parser.add_argument('--artifact-dir')
     parser.add_argument('--reviewed-tables')
+    parser.add_argument('--external-legal')
     args = parser.parse_args(argv)
-    if bool(args.separate_notice) != bool(args.artifact_dir):
-        parser.error('--separate-notice and --artifact-dir must be provided together')
+    if bool(args.artifact_dir) != bool(args.separate_notice or args.external_legal):
+        parser.error('--artifact-dir must be provided with --separate-notice or --external-legal')
     result = assess(args.conditions, args.review, args.pdf, args.separate_notice, args.artifact_dir,
-                    args.reviewed_tables)
+                    args.reviewed_tables, args.external_legal)
     print(json.dumps(result, ensure_ascii=False))
     # Exit 1 means valid but incomplete; 2 means invalid input. Never exit 0 yet.
     return 2 if any(r['code'] in ('ARTIFACT_INVALID', 'SEPARATE_NOTICE_ARTIFACT_INVALID',
-                                 'REVIEWED_TABLES_ARTIFACT_INVALID')
+                                 'REVIEWED_TABLES_ARTIFACT_INVALID', 'EXTERNAL_LEGAL_ARTIFACT_INVALID')
                     for r in result['reasons']) else 1
 
 

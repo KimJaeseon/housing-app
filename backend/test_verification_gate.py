@@ -12,6 +12,8 @@ CONDITIONS = ROOT / 'backend/eligibility_conditions/2015122300020807.json'
 REVIEW = ROOT / 'backend/eligibility_reviews/2015122300020807.json'
 PDF = ROOT / 'docs/references/lh-notice-2015122300020807.pdf'
 TABLES = ROOT / 'backend/reviewed_tables/2015122300020807.json'
+LEGAL = ROOT / 'backend/external_legal/2015122300020807.json'
+ARTIFACTS = ROOT / 'docs/references'
 
 
 class VerificationGateTests(unittest.TestCase):
@@ -46,6 +48,25 @@ class VerificationGateTests(unittest.TestCase):
         result = assess(CONDITIONS, REVIEW, PDF, reviewed_tables_path=TABLES.with_name('missing.json'))
         self.assertEqual(result['reviewed_tables']['status'], 'invalid')
         self.assertIn('REVIEWED_TABLES_ARTIFACT_INVALID', [r['code'] for r in result['reasons']])
+
+    def test_external_legal_is_partial_and_never_promotes(self):
+        result = assess(CONDITIONS, REVIEW, PDF, artifact_dir=ARTIFACTS,
+                        external_legal_path=LEGAL)
+        self.assertEqual(result['external_legal'], {'status': 'valid_partial',
+                          'source_count': 2, 'aligned_check_count': 4,
+                          'unresolved_check_count': 2})
+        self.assertIn('EXTERNAL_LEGAL_EVIDENCE_PENDING', [r['code'] for r in result['reasons']])
+        self.assertFalse(result['eligible_for_promotion'])
+
+    def test_external_legal_wrong_source_is_invalid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = ARTIFACTS / 'law-public-housing-rule-annex-5-2-2025-10-31.pdf'
+            destination = Path(directory) / source.name
+            destination.write_bytes(source.read_bytes() + b'changed')
+            result = assess(CONDITIONS, REVIEW, PDF, artifact_dir=directory,
+                            external_legal_path=LEGAL)
+        self.assertEqual(result['external_legal']['status'], 'invalid')
+        self.assertIn('EXTERNAL_LEGAL_ARTIFACT_INVALID', [r['code'] for r in result['reasons']])
 
     def test_fabricated_full_coverage_is_invalid(self):
         record = json.loads(CONDITIONS.read_text(encoding='utf-8'))

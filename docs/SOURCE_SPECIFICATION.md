@@ -9,6 +9,8 @@
 
 ## 1. 구성 및 경계
 
+2026-10-12 외부 법령 근거: `backend/external_legal/2015122300020807.json`은 공식 별표·표준임대료 고시 PDF의 파일 해시와 6개 부분 대조 결과를 보관한다. `backend/external_legal.py`는 공고 ID·원문 파일 해시·검토 범위를 검사하고 `verification_gate.py`와 소유자 전용 API에 `valid_partial` 또는 `invalid`로 전달한다. 적용 버전과 개인 판정은 확정하지 않는다. [외부 원문 대조](validation/2026-10-12_EXTERNAL_LEGAL_SOURCES.md)를 참조한다.
+
 2026-10-12 소득·갱신 근거: `backend/reviewed_tables/2015122300020807.json`은 강서염창 PDF 14쪽 104개 원 금액과 28~31쪽 갱신 전용 조건을 분리해 보관한다. `backend/reviewed_tables.py`는 PDF·검토 기록 ID/해시와 수동 검토 데이터 SHA-256을 검사한다. `verification_gate.py`는 선택된 표 자료를 `valid_partial` 또는 `invalid`로 보고하고, `app.py`의 소유자 전용 `/verification` 응답은 부분 검토의 표 범위만 `LiveNotice.tsx`에 전달한다. 개인 적격·갱신액 계산과 `verified` 승격은 없다. [검토·검사 기록](validation/2026-10-12_INCOME_RENEWAL_TABLES.md)을 참조한다.
 
 2026-10-08 P4 후속: `backend/separate_notice.py`의 `capture`는 LH 공개 공지와 첨부를 제한된 URL·용량·리다이렉트 정책으로 읽는다. `load_snapshot`은 `shared/contracts/separate-notice.schema.json`, `backend/separate_notices/` 기록과 `docs/references/`의 공개 본문 추출본·PDF를 결합해 검사한다. `backend/verification_gate.py`의 선택 옵션으로 연결했으며 후보 관계·부분 검토를 유지한다. 이후 2026-10-12에 검증 사유 API/화면을 연결했지만 후보 관계를 확정하지는 않았다. [당시 범위·검증 기록](validation/2026-10-08_SEPARATE_NOTICE.md)을 참조한다.
